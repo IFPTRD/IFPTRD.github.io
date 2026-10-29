@@ -1,0 +1,151 @@
+{
+  "meta": {
+    "title": "Generic Team Guide",
+    "subtitle": "Illustrative content only",
+    "audience": "Team members"
+  },
+  "pages": [
+    {
+      "id": "start-here",
+      "title": "Start Here",
+      "intro": "A generic example of how the guide template works.",
+      "blocks": [
+        {
+          "type": "hero",
+          "kicker": "Example",
+          "title": "A useful reference guide",
+          "text": "Begin with the purpose and intended outcome."
+        },
+        {
+          "type": "note",
+          "label": "Important",
+          "text": "Replace all sample content and verify every statement before sharing."
+        },
+        {
+          "type": "checks",
+          "title": "At a Glance",
+          "items": [
+            {
+              "title": "Purpose",
+              "detail": "What is the reader trying to achieve?"
+            },
+            {
+              "title": "Owner",
+              "detail": "Who is accountable?"
+            },
+            {
+              "title": "Inputs",
+              "detail": "What information is required?"
+            },
+            {
+              "title": "Next Step",
+              "detail": "What follows?"
+            }
+          ]
+        },
+        {
+          "type": "cards",
+          "title": "Explore",
+          "items": [
+            {
+              "title": "Working Process",
+              "text": "A sample process.",
+              "link": "working-process"
+            },
+            {
+              "title": "Resources",
+              "text": "Approved reference material.",
+              "link": "resources"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "working-process",
+      "title": "Working Process",
+      "parent": "start-here",
+      "intro": "Illustrative steps only.",
+      "blocks": [
+        {
+          "type": "steps",
+          "title": "Stages",
+          "items": [
+            {
+              "title": "Collect inputs",
+              "text": "Identify the necessary information."
+            },
+            {
+              "title": "Evaluate options",
+              "text": "Compare choices and dependencies."
+            },
+            {
+              "title": "Record outcome",
+              "text": "Document the next action."
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "title": "Responsibilities",
+          "columns": [
+            "Activity",
+            "Lead",
+            "Output"
+          ],
+          "rows": [
+            [
+              "Prepare",
+              "Owner",
+              "Draft"
+            ],
+            [
+              "Review",
+              "Reviewer",
+              "Feedback"
+            ],
+            [
+              "Publish",
+              "Publisher",
+              "Approved guide"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "resources",
+      "title": "Resources",
+      "intro": "Example reference and definitions.",
+      "blocks": [
+        {
+          "type": "resources",
+          "title": "Other Resources",
+          "items": [
+            {
+              "title": "Example link — replace",
+              "url": "https://www.microsoft.com",
+              "note": "Illustrative URL only"
+            }
+          ]
+        },
+        {
+          "type": "glossary",
+          "title": "Terms",
+          "items": [
+            {
+              "term": "SOP",
+              "definition": "Standard operating procedure"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "SOP",
+      "definition": "Standard operating procedure"
+    }
+  ]
+}
