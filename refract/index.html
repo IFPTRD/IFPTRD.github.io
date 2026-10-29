@@ -114,23 +114,46 @@ function normalizeCopilotJson(input){
  if(commas.count)changes.push('removed '+commas.count+' trailing comma(s)');
  return {text:s,changes};
 }
+function normalizeDataShape(data){
+ const changes=[];
+ if(!data||typeof data!=='object'||!Array.isArray(data.pages))return changes;
+ data.pages.forEach((page,i)=>{
+  if(!page||!Array.isArray(page.blocks))return;
+  page.blocks.forEach((b,j)=>{
+   if(!b||typeof b!=='object')return;
+   const at='page '+(i+1)+', block '+(j+1);
+   if(b.type==='note'&&typeof b.label!=='string'&&typeof b.title==='string'){
+    b.label=b.title;delete b.title;changes.push(at+': note title → label');
+   }
+   if(b.type==='checks'&&Array.isArray(b.items)){
+    let count=0;b.items=b.items.map((x,k)=>{if(typeof x==='string'){count++;return {title:'Check '+(k+1),detail:x}}return x});
+    if(count)changes.push(at+': structured '+count+' checklist entries');
+   }
+   if(b.type==='resources'&&Array.isArray(b.items)&&b.items.length&&b.items.every(x=>x&&typeof x==='object'&&!x.url)){
+    const combined=b.items.map(x=>[x.title,x.text||x.note].filter(v=>typeof v==='string'&&v.trim()).join(' — '));
+    b.type='bullets';b.items=combined;changes.push(at+': unlinked resources converted to text list');
+   }
+  });
+ });
+ return changes;
+}
 function parsed(){
  parseNotice='';
- const source=field.value;
- try{return JSON.parse(source)}catch(originalError){}
- const normalized=normalizeCopilotJson(source);
- try{
-  const data=JSON.parse(normalized.text);
-  if(normalized.changes.length){
-   field.value=JSON.stringify(data,null,2);
-   parseNotice='Formatting repaired: '+normalized.changes.join('; ')+'. Review the corrected JSON and the resulting guide before sharing. ';
+ let data,changes=[],source=field.value;
+ try{data=JSON.parse(source)}catch(originalError){
+  const normalized=normalizeCopilotJson(source);
+  try{data=JSON.parse(normalized.text);changes=normalized.changes;}
+  catch(err){
+   feedback('Could not parse Copilot JSON: '+err.message+'. Try regenerating a shorter response in a single JSON code block. Refract handles common Markdown escapes and missing brackets, but cannot recover arbitrary incomplete JSON.',true);
+   return null;
   }
-  return data;
- }catch(err){
-  const msg='Could not parse Copilot JSON: '+err.message+'. Try asking Copilot to regenerate a shorter answer as one valid JSON code block. Refract accepts fenced JSON blocks and repairs common bracket and comma formatting, but cannot reconstruct arbitrary missing content.';
-  feedback(msg,true);
-  return null;
  }
+ changes.push(...normalizeDataShape(data));
+ if(changes.length){
+  field.value=JSON.stringify(data,null,2);
+  parseNotice='Formatting repaired ('+changes.join('; ')+'). Review the corrected content before sharing. ';
+ }
+ return data;
 }
 function build(data){const j=JSON.stringify(data).replace(/</g,'\\u003c').replace(/&/g,'\\u0026').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');return viewerTemplate.replace('__DATA_JSON__',j)}
 function prepare(){const data=parsed();if(!data)return null;const r=validate(data);if(r.errors.length){feedback('Fix these issues before generating:\n• '+r.errors.join('\n• '),true);return null}feedback(parseNotice+'Ready: '+data.pages.length+' pages. '+(r.warnings.length?'Review these warnings:\n• '+r.warnings.join('\n• '):'No structural errors found.'));$('pagecount').textContent=data.pages.length+' page'+(data.pages.length!==1?'s':'');return data}
