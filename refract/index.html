@@ -9,17 +9,58 @@ const viewerTemplate=atob('PCFkb2N0eXBlIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+C
 const defaultData={"meta":{"title":"Generic Team Guide","subtitle":"Reusable example \u00b7 Replace all placeholder content","audience":"Team members"},"pages":[{"id":"start-here","title":"Start Here","intro":"This sample uses placeholder information only. Replace it with verified material relevant to your own guide.","blocks":[{"type":"hero","kicker":"Example layout","title":"A clear guide to a shared process","text":"Use this area for the primary purpose, audience, and intended outcome."},{"type":"note","label":"Before you begin","text":"Replace every placeholder, verify links, and have the content owner approve the guide before sharing."},{"type":"checks","title":"Questions to consider","items":[{"title":"Purpose","detail":"What is this guide intended to help someone do?"},{"title":"Audience","detail":"Who will use it and how familiar are they with the subject?"},{"title":"Action","detail":"What should readers do with the information?"},{"title":"Follow-up","detail":"What needs to be confirmed or revisited?"}]},{"type":"cards","title":"Explore the guide","items":[{"title":"Working Process","text":"An example of sequential instructions and tables.","link":"working-process"},{"title":"Resources","text":"A place for approved documents and terms.","link":"resources"}]}]},{"id":"working-process","parent":"start-here","title":"Working Process","intro":"Replace these generic stages with the actual process from approved source material.","blocks":[{"type":"steps","title":"Example stages","items":[{"title":"Collect inputs","text":"Identify the information needed to proceed."},{"title":"Review options","text":"Compare available approaches and any dependencies."},{"title":"Record the outcome","text":"Document decisions, owners, and follow-up actions."}]},{"type":"table","title":"Example responsibility table","columns":["Activity","Lead","Output"],"rows":[["Prepare","Assigned owner","Complete draft"],["Review","Designated reviewer","Comments and corrections"],["Publish","Authorized publisher","Approved version"]]},{"type":"bullets","title":"Useful reminders","items":["Use short, descriptive headings.","Keep one idea per bullet.","Include a source for important claims."]}]},{"id":"resources","title":"Resources","intro":"Use this page for source material and definitions relevant to your project.","blocks":[{"type":"paragraph","title":"How to use these resources","text":"Add working links to authoritative documents. Remove example material before publishing."},{"type":"resources","title":"Other resources","items":[{"title":"Example reference only","url":"https://www.microsoft.com","note":"Replace with an approved internal reference."}]},{"type":"glossary","title":"Terms","items":[{"term":"SOP","definition":"Standard operating procedure"},{"term":"SME","definition":"Subject-matter expert"}]},{"type":"note","label":"Glossary example","text":"Wrap a defined term in double brackets, such as [[SOP]], to add a hover definition."}]}],"glossary":[{"term":"SOP","definition":"Standard operating procedure"},{"term":"SME","definition":"Subject-matter expert"}]};
 const $=id=>document.getElementById(id), field=$('json');
 function feedback(message,error=false){$('feedback').textContent=message;$('feedback').classList.toggle('error',error)}
-function validate(data){const errors=[],warnings=[];const types=new Set(['hero','paragraph','note','cards','checks','steps','bullets','table','resources','glossary']);
-if(!data||typeof data!=='object'||Array.isArray(data))errors.push('Top-level JSON must be an object.');
-if(!data.meta||typeof data.meta.title!=='string'||!data.meta.title.trim())errors.push('meta.title must be a non-empty string.');
-if(!Array.isArray(data.pages)||!data.pages.length)errors.push('pages must be a non-empty array.');
-if(errors.length)return {errors,warnings};
-if(data.pages.length>40)warnings.push('This guide has more than 40 pages; consider breaking it into smaller guides.');
-const ids=new Set();
-data.pages.forEach((p,i)=>{if(!p||typeof p!=='object'){errors.push('Page '+(i+1)+' must be an object.');return}if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.id||''))errors.push('Page '+(i+1)+': id must be lowercase letters/numbers with hyphens.');if(ids.has(p.id))errors.push('Repeated page id: '+p.id);ids.add(p.id);if(!p.title||typeof p.title!=='string')errors.push('Page '+(i+1)+': title is required.');if(!Array.isArray(p.blocks))errors.push('Page '+(i+1)+': blocks must be an array.');else p.blocks.forEach((b,j)=>{if(!types.has(b.type))errors.push('Page '+(i+1)+' block '+(j+1)+': unsupported type '+String(b.type));if(b.type==='table'){if(!Array.isArray(b.columns)||!Array.isArray(b.rows))errors.push('Page '+(i+1)+' table requires columns and rows arrays.');else if(b.rows.some(r=>!Array.isArray(r)||r.length!==b.columns.length))warnings.push('Page '+(i+1)+' table rows have inconsistent column counts.')}if(b.type==='resources'&&Array.isArray(b.items))b.items.forEach(item=>{if(item.url&&!/^https?:\/\//i.test(item.url))warnings.push('Page '+(i+1)+' has a resource URL that is not HTTP(S) and will not be clickable.')})})});
-data.pages.forEach((p,i)=>{if(p&&p.parent&&!ids.has(p.parent))errors.push('Page '+(i+1)+': unknown parent '+p.parent);if(p&&Array.isArray(p.blocks))p.blocks.filter(b=>b.type==='cards'&&Array.isArray(b.items)).forEach(b=>b.items.forEach(x=>{if(x.link&&!ids.has(x.link))warnings.push('Page '+(i+1)+': card link '+x.link+' has no destination.')}))});
-return {errors,warnings}}
-function parsed(){try{return JSON.parse(field.value)}catch(e){feedback('Invalid JSON: '+e.message,true);return null}}
+function validate(data){
+ const errors=[],warnings=[],types=new Set(['hero','paragraph','note','cards','checks','steps','bullets','table','resources','glossary']);
+ const validText=v=>typeof v==='string'&&v.trim().length>0;
+ const error=(path,message)=>errors.push(path+': '+message);
+ if(!data||typeof data!=='object'||Array.isArray(data))return {errors:['JSON root must be an object.'],warnings};
+ if(!data.meta||!validText(data.meta.title))error('meta.title','required non-empty string');
+ if(!Array.isArray(data.pages)||!data.pages.length)return {errors:[...errors,'pages must be a nonempty array.'],warnings};
+ if(data.pages.length>40)warnings.push('More than 40 pages; consider shortening the guide.');
+ const ids=new Set();
+ data.pages.forEach((p,i)=>{
+  const path='Page '+(i+1);
+  if(!p||typeof p!=='object'){error(path,'must be an object');return}
+  if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(p.id||''))error(path+'.id','must be lowercase words/numbers separated by hyphens');
+  if(ids.has(p.id))error(path+'.id','repeated ID: '+p.id);ids.add(p.id);
+  if(!validText(p.title))error(path+'.title','required');
+  if(!Array.isArray(p.blocks)){error(path+'.blocks','must be an array');return}
+  p.blocks.forEach((b,j)=>{
+   const loc=path+' block '+(j+1);
+   if(!b||typeof b!=='object'||!types.has(b.type)){error(loc,'unsupported or missing block type');return}
+   if(b.type==='note'){if(!validText(b.label))error(loc,'note requires label (not title)');if(!validText(b.text))error(loc,'note requires text');return}
+   if(!validText(b.title))error(loc,'requires title');
+   if(['hero','paragraph'].includes(b.type)&&!validText(b.text))error(loc,'requires text');
+   if(b.type==='table'){
+    if(!Array.isArray(b.columns)||!b.columns.length||!Array.isArray(b.rows))error(loc,'table needs columns and rows arrays');
+    else b.rows.forEach((row,k)=>{if(!Array.isArray(row)||row.length!==b.columns.length)error(loc+' row '+(k+1),'must contain '+b.columns.length+' cells')});
+   }
+   if(['checks','cards','steps','bullets','resources','glossary'].includes(b.type)){
+    if(!Array.isArray(b.items)){error(loc,'items must be an array');return}
+    b.items.forEach((item,k)=>{
+     const where=loc+' item '+(k+1);
+     if(b.type==='bullets'){if(typeof item!=='string')error(where,'bullets must contain strings');return}
+     if(!item||typeof item!=='object'||Array.isArray(item)){error(where,b.type+' requires objects, not strings');return}
+     if(b.type==='checks'&&(!validText(item.title)||!validText(item.detail)))error(where,'checks need title and detail');
+     if(['cards','steps'].includes(b.type)&&(!validText(item.title)||!validText(item.text)))error(where,'needs title and text');
+     if(b.type==='glossary'&&(!validText(item.term)||!validText(item.definition)))error(where,'needs term and definition');
+     if(b.type==='resources'&&(!validText(item.title)||!validText(item.url)||!/^https?:\/\//i.test(item.url)))error(where,'resources need a real HTTP(S) url; otherwise use bullets');
+    });
+   }
+  });
+ });
+ data.pages.forEach((p,i)=>{
+  if(!p||typeof p!=='object')return;
+  if(p.parent&&!ids.has(p.parent))error('Page '+(i+1)+'.parent','unknown page: '+p.parent);
+  (Array.isArray(p.blocks)?p.blocks:[]).filter(b=>b&&b.type==='cards').forEach(b=>(Array.isArray(b.items)?b.items:[]).forEach(x=>{if(x&&x.link&&!ids.has(x.link))error('Page '+(i+1)+' card link','unknown page: '+x.link)}));
+ });
+ if(data.glossary!==undefined){
+  if(!Array.isArray(data.glossary))error('glossary','must be an array');
+  else data.glossary.forEach((x,i)=>{if(!x||!validText(x.term)||!validText(x.definition))error('glossary item '+(i+1),'requires term and definition')});
+ }
+ return {errors,warnings}
+}
+function parsed(){try{return JSON.parse(field.value)}catch(e){feedback('Invalid JSON: '+e.message+'. Check for Copilot formatting such as escaped brackets (\\[ or \\]) or missing quotation marks. Re-generate using the Refract skill and validate the output.',true);return null}}
 function build(data){const j=JSON.stringify(data).replace(/</g,'\\u003c').replace(/&/g,'\\u0026').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');return viewerTemplate.replace('__DATA_JSON__',j)}
 function prepare(){const data=parsed();if(!data)return null;const r=validate(data);if(r.errors.length){feedback('Fix these issues before generating:\n• '+r.errors.join('\n• '),true);return null}feedback('Ready: '+data.pages.length+' pages. '+(r.warnings.length?'Review these warnings:\n• '+r.warnings.join('\n• '):'No structural errors found.'));$('pagecount').textContent=data.pages.length+' page'+(data.pages.length!==1?'s':'');return data}
 function download(text,name,type){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
