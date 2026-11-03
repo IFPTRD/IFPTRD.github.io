@@ -35,7 +35,7 @@ def check(data):
             if bad in meta:warnings.append("meta."+bad+": remove generated document provenance")
     pages=data.get("pages")
     if not isinstance(pages,list) or not pages:return errors+["pages: expected nonempty array"],warnings
-    if len(pages)>40:warnings.append("pages: exceeds 40 pages")
+    # No arbitrary page-count warning: large source-equivalent binders may legitimately require many pages.
     ids=set()
     for i,p in enumerate(pages):
         loc="pages["+str(i)+"]"
