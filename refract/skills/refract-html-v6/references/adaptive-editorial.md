@@ -1,6 +1,6 @@
 # Adaptive editorial patterns — examples, not mandatory templates
 
-Choose a pattern based on the **reader's actual goal**. The same document may combine patterns. Do not force these section names or layouts.
+Choose a pattern based on the **reader's actual goal and source's function**, while preserving the original document's substantive coverage. The output should be an improved replacement for the whole source, not a condensed supplement. The same document may combine patterns. Do not force section names or layouts.
 
 | Reader's need | Likely organizing pattern | Suitable Refract blocks | Common mistake to avoid |
 | --- | --- | --- | --- |
@@ -14,7 +14,7 @@ Choose a pattern based on the **reader's actual goal**. The same document may co
 | Study or teach | Learning path → core concepts → examples → summary/terms | paragraph, steps, cards, glossary | Pretending to provide a live quiz without executable support |
 | Understand project or event | Purpose → milestones → responsibilities → status → resources | timeline (if grounded), table, cards | Fabricating dates or filling a timeline with nonchronological items |
 | Navigate a large collection | Topic/task index → concise descriptions → direct links/definitions | cards, resources, glossary, tables | Turning every link into a separate page |
-| Support an executive during an exercise | Role → decision aid → governance/partners → incident stages → reference | checks, cards, governance (if grounded), timeline (if grounded) | Applying executive framing to unrelated documents |
+| Support an executive during an exercise | Role → decision aid → governance/partners → incident stages → reference (if grounded in source) | checks, cards, governance, timeline | Applying executive framing to unrelated documents |\n| Replace a meeting e-binder | Meeting and full agenda → agenda-specific issue briefs → supporting notes, annexes and links | paragraph, table, bullets, cards, resources | Discarding detailed briefings or adding unsolicited intervention/coaching sections |
 
 ## A short quality-control example
 
@@ -33,3 +33,11 @@ A source contains complex technical drawings or screenshot-based instructions. S
 5. Keep original words for legally or technically significant concepts; clarify in glossaries rather than altering definitions.
 6. Don't add provenance or publishing boilerplate unless explicitly requested.
 7. Deliver content suitable for the actual reader, not an imagined generic decision-maker.
+
+## No default intervention advice
+
+Do not automatically create an `Interventions`, `Handling difficult exchanges`, `What to say`, `Suggested remarks`, `Discussion strategy`, `Managing challenging questions` or `Talking points` page or block because a binder involves meetings, ministers, executives, negotiations or external partners. Use such material only if the source **actually contains it** or the user expressly requests its creation. Preserve existing source talking points or recommended approaches faithfully when present; do not replace them with generalized advice.
+
+## Full-document coverage
+
+For large binders, preserve the complete set of issue briefings, agenda items, background facts, options, decisions, supporting material and annexes. The guide may be longer than a conventional reference tool. Replace duplicated or cumbersome formatting, **not the source's substantive content**. Create an internal coverage inventory and map each substantive source unit to guide pages; see `source-coverage.md`. An e-binder is not a summary unless the user specifically requests one.
