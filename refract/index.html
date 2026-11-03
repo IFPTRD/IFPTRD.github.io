@@ -213,7 +213,7 @@ function parsed(){
 function build(data,preview=false){const j=JSON.stringify(data).replace(/</g,'\\u003c').replace(/&/g,'\\u0026').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');const selected=preview&&typeof visualState!=='undefined'&&visualState.data?.pages?.[visualState.page]?visualState.data.pages[visualState.page].id:'';return viewerTemplate.replace('__DATA_JSON__',j).replace('__EDITOR_MODE__',preview?'true':'false').replace('__EDITOR_PAGE__',JSON.stringify(selected))}
 function prepare(){const data=parsed();if(!data)return null;const r=validate(data);if(r.errors.length){feedback('Fix these issues before generating:\n• '+r.errors.join('\n• '),true);return null}feedback(parseNotice+'Ready: '+data.pages.length+' pages. '+(r.warnings.length?'Review these warnings:\n• '+r.warnings.join('\n• '):'No structural errors found.'));$('pagecount').textContent=data.pages.length+' page'+(data.pages.length!==1?'s':'');return data}
 function download(text,name,type){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
-$('previewBtn').onclick=()=>{const data=prepare();if(data)$('frame').srcdoc=build(data,true)};
+$('previewBtn').onclick=()=>{const data=prepare();if(!data)return;if(typeof visualState!=='undefined'&&visualState.mode==='json'){visualState.data=data;visualState.page=Math.min(visualState.page,data.pages.length-1);visualState.block=0}$('frame').srcdoc=build(data,true)};
 $('exportBtn').onclick=()=>{const data=prepare();if(data){const basename=(data.meta.title||'reference-guide').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'reference-guide';download(build(data),basename+'.html','text/html;charset=utf-8')}};
 $('saveBtn').onclick=()=>{const data=prepare();if(data)download(JSON.stringify(data,null,2)+'\n','guide-content.json','application/json;charset=utf-8')};
 $('sampleBtn').onclick=()=>{field.value=JSON.stringify(defaultData,null,2);$('previewBtn').click()};
@@ -240,6 +240,7 @@ function switchEditor(mode){
 function syncVisual(refresh=true){
  if(!visualState.data)return;
  field.value=JSON.stringify(visualState.data,null,2);
+ $('saveStatus').textContent='Local edits · export to keep this version';
  if(pendingRefresh)clearTimeout(pendingRefresh);if(refresh)$('previewBtn').click();else pendingRefresh=setTimeout(()=>$('previewBtn').click(),480);
 }
 function swapVisual(items,from,to,type){
@@ -343,7 +344,7 @@ function renderObjectFields(container,target){
  }
 }
 $('visualModeBtn').addEventListener('click',()=>switchEditor('visual'));
-$('jsonModeBtn').addEventListener('click',()=>{syncVisual(false);switchEditor('json')});
+$('jsonModeBtn').addEventListener('click',()=>{if(visualState.data)field.value=JSON.stringify(visualState.data,null,2);switchEditor('json')});
 $('addPageBtn').addEventListener('click',()=>{const d=visualState.data;if(!d)return;let n=d.pages.length+1,id='new-page-'+n;while(d.pages.some(p=>p.id===id))id='new-page-'+(++n);d.pages.push({id,title:'New Page',intro:'',blocks:[]});visualState.page=d.pages.length-1;visualState.block=0;syncVisual();renderVisual()});
 $('addBlockBtn').addEventListener('click',()=>{const d=visualState.data;if(!d)return;const blocks=d.pages[visualState.page].blocks;blocks.push(newVisualBlock($('newBlockType').value));visualState.block=blocks.length-1;syncVisual();renderVisual()});
 const originalSample=$('sampleBtn').onclick;
