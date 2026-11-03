@@ -8,11 +8,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('ifptrd-theme');
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.dataset.theme = (saved === 'day' || saved === 'night')
+                    ? saved
+                    : (prefersDark ? 'night' : 'day');
+            } catch (e) {}
+        })();
+    </script>
     <style>
-        :root {
+        :root,
+        html[data-theme="day"] {
+            color-scheme: light;
             --canvas: #ffffff;
-            --soft-stone: #eeece7;
-            --soft-stone-hover: #e5e2dc;
+            --card-bg: #eeece7;
+            --card-hover-bg: #e5e2dc;
+            --card-border: transparent;
+            --card-hover-border: #17171c;
             --primary: #17171c;
             --ink: #212121;
             --body-muted: #616161;
@@ -20,11 +35,49 @@
             --hairline: #d9d9dd;
             --deep-green: #003c33;
             --coral: #ff7759;
-            --action-blue: #1863dc;
             --focus-blue: #4c6ee6;
+            --cta-bg: #17171c;
+            --cta-text: #ffffff;
+            --cta-hover-bg: #003c33;
             --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
             --font-sans: 'Inter', Arial, ui-sans-serif, system-ui, sans-serif;
             --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="day"]) {
+                color-scheme: dark;
+                --canvas: #0c0c0e;
+                --card-bg: #17171c;
+                --card-hover-bg: #1f1f26;
+                --card-border: rgba(255, 255, 255, 0.12);
+                --card-hover-border: rgba(255, 255, 255, 0.45);
+                --primary: #ffffff;
+                --ink: #ffffff;
+                --body-muted: rgba(255, 255, 255, 0.68);
+                --slate: #93939f;
+                --hairline: rgba(255, 255, 255, 0.12);
+                --cta-bg: #ffffff;
+                --cta-text: #17171c;
+                --cta-hover-bg: #edfce9;
+            }
+        }
+
+        html[data-theme="night"] {
+            color-scheme: dark;
+            --canvas: #0c0c0e;
+            --card-bg: #17171c;
+            --card-hover-bg: #1f1f26;
+            --card-border: rgba(255, 255, 255, 0.12);
+            --card-hover-border: rgba(255, 255, 255, 0.45);
+            --primary: #ffffff;
+            --ink: #ffffff;
+            --body-muted: rgba(255, 255, 255, 0.68);
+            --slate: #93939f;
+            --hairline: rgba(255, 255, 255, 0.12);
+            --cta-bg: #ffffff;
+            --cta-text: #17171c;
+            --cta-hover-bg: #edfce9;
         }
 
         * {
@@ -42,6 +95,7 @@
             line-height: 1.5;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            transition: background-color 0.18s ease, color 0.18s ease;
         }
 
         .top-bar {
@@ -53,18 +107,25 @@
         .page {
             max-width: 1120px;
             margin: 0 auto;
-            padding: 56px 24px 80px;
+            padding: 48px 24px 72px;
         }
 
         header {
-            padding-bottom: 32px;
+            padding-bottom: 28px;
             border-bottom: 1px solid var(--hairline);
-            margin-bottom: 40px;
+            margin-bottom: 36px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px 24px;
+        }
+
+        .header-main {
             display: flex;
             flex-wrap: wrap;
             align-items: baseline;
-            justify-content: space-between;
-            gap: 16px 32px;
+            gap: 12px 24px;
         }
 
         .brand {
@@ -83,7 +144,7 @@
 
         h1 {
             font-family: var(--font-display);
-            font-size: clamp(36px, 5vw, 52px);
+            font-size: clamp(32px, 4.5vw, 44px);
             font-weight: 400;
             line-height: 1;
             letter-spacing: -0.02em;
@@ -99,6 +160,31 @@
         .subtitle .sep {
             color: var(--slate);
             margin: 0 8px;
+        }
+
+        .theme-toggle {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--hairline);
+            border-radius: 30px;
+            padding: 7px 14px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--primary);
+            background-color: var(--card-bg);
+        }
+
+        .theme-toggle:focus-visible {
+            outline: 2px solid var(--focus-blue);
+            outline-offset: 2px;
         }
 
         .columns {
@@ -134,8 +220,8 @@
         }
 
         .product-card {
-            background-color: var(--soft-stone);
-            border: 1px solid transparent;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
             border-radius: 8px;
             padding: 28px;
             text-decoration: none;
@@ -148,8 +234,8 @@
         }
 
         .product-card:hover {
-            background-color: var(--soft-stone-hover);
-            border-color: var(--primary);
+            background-color: var(--card-hover-bg);
+            border-color: var(--card-hover-border);
         }
 
         .product-card:focus-visible {
@@ -185,19 +271,19 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background-color: var(--primary);
-            color: var(--canvas);
+            background-color: var(--cta-bg);
+            color: var(--cta-text);
             font-family: var(--font-sans);
             font-size: 14px;
             font-weight: 500;
             line-height: 1;
             padding: 10px 18px;
             border-radius: 32px;
-            transition: background-color 0.15s ease;
+            transition: background-color 0.15s ease, color 0.15s ease;
         }
 
         .product-card:hover .pill-cta {
-            background-color: var(--deep-green);
+            background-color: var(--cta-hover-bg);
         }
 
         .path-label {
@@ -209,7 +295,7 @@
 
         @media (max-width: 768px) {
             .page {
-                padding: 36px 20px 56px;
+                padding: 32px 20px 56px;
             }
 
             .columns {
@@ -227,15 +313,18 @@
     <div class="top-bar" aria-hidden="true"></div>
     <main class="page">
         <header>
-            <div class="brand">
-                <span class="brand-dot" aria-hidden="true"></span>
-                <h1>IFPTRD</h1>
+            <div class="header-main">
+                <div class="brand">
+                    <span class="brand-dot" aria-hidden="true"></span>
+                    <h1>IFPTRD</h1>
+                </div>
+                <p class="subtitle">
+                    Experimental, unclassified productivity tools
+                    <span class="sep" aria-hidden="true">/</span>
+                    <span lang="fr-CA">Outils de productivité expérimentaux et non classifiés</span>
+                </p>
             </div>
-            <p class="subtitle">
-                Experimental, unclassified productivity tools
-                <span class="sep" aria-hidden="true">/</span>
-                <span lang="fr-CA">Outils de productivité expérimentaux et non classifiés</span>
-            </p>
+            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch color theme / Changer le thème"></button>
         </header>
 
         <div class="columns">
@@ -320,5 +409,51 @@
             </section>
         </div>
     </main>
+
+    <script>
+        (function () {
+            var btn = document.getElementById('themeToggle');
+            var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+            function getTheme() {
+                var attr = document.documentElement.dataset.theme;
+                if (attr === 'day' || attr === 'night') return attr;
+                return media.matches ? 'night' : 'day';
+            }
+
+            function applyTheme(theme) {
+                document.documentElement.dataset.theme = theme;
+                btn.textContent = theme === 'day' ? '☾ Night / Nuit' : '☀ Day / Jour';
+                btn.setAttribute(
+                    'aria-label',
+                    theme === 'day'
+                        ? 'Switch to night mode / Passer au mode nuit'
+                        : 'Switch to day mode / Passer au mode jour'
+                );
+            }
+
+            applyTheme(getTheme());
+
+            btn.addEventListener('click', function () {
+                var next = getTheme() === 'day' ? 'night' : 'day';
+                try {
+                    localStorage.setItem('ifptrd-theme', next);
+                } catch (e) {}
+                applyTheme(next);
+            });
+
+            if (media.addEventListener) {
+                media.addEventListener('change', function (e) {
+                    try {
+                        if (!localStorage.getItem('ifptrd-theme')) {
+                            applyTheme(e.matches ? 'night' : 'day');
+                        }
+                    } catch (err) {
+                        applyTheme(e.matches ? 'night' : 'day');
+                    }
+                });
+            }
+        })();
+    </script>
 </body>
 </html>
