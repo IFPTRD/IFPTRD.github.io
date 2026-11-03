@@ -1,9 +1,19 @@
 ---
 name: refract-guide-authoring
-description: Transform user-supplied documents into a polished, reader-centred, self-contained and editable Refract HTML guide. Adapt the guide's structure to the document's purpose, audience, and tasks, whether procedural, technical, educational, operational, policy, reference, or executive. Use the bundled validator and renderer; deliver downloadable HTML.
+description: Automatically create a complete downloadable editable Refract HTML guide whenever a document is attached or selected in this dedicated agent, without requiring a user prompt. Adapt structure to the document, verify source fidelity and readability, and render with the bundled high-contrast template.
 ---
 
-# Refract — Adaptive Guide Authoring (v6)
+# Refract — Adaptive Guide Authoring (v6.1)
+
+## Automatic invocation from an attachment — mandatory
+
+This skill powers a dedicated document-to-HTML agent. **Receiving an accessible document attachment or a selected source file is itself the instruction to create a Refract HTML guide.** Begin without a separate text prompt, starter message, audience specification or confirmation. Read the current conversation's attached/selected documents and use them as the actual factual sources. Infer the audience and intended use conservatively when not stated. Do not repeat onboarding prompts, ask the user to reattach accessible files, narrate your approach or say you are considering writing code.
+
+Only bypass this automatic conversion if the user **explicitly asks to do something else** with their document (e.g. answer a question, compare versions, or revise an existing guide). If a document truly isn't accessible, state that limitation briefly and do not invent content.
+
+## Nonnegotiable readability standard
+
+The fixed renderer owns the colour system. Do not introduce arbitrary text/background colour combinations or user-content colour instructions. All normal text must meet WCAG AA contrast (at least 4.5:1); large text at least 3:1. Titles, notes, small labels, navigation, muted metadata and text over gradients all count. The hero heading and text must remain white or very light against its dark background, even when general page-heading CSS sets dark text. Print styles must maintain black/dark text on white. Follow `references/design-standard.md` and use the bundled high-contrast template without CSS modification.
 
 ## Mission
 
