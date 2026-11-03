@@ -7,7 +7,7 @@
     <title>IFPTRD</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400&family=Inter:wght@400&display=swap" rel="stylesheet">
     <script>
         (function () {
             try {
@@ -21,63 +21,66 @@
     </script>
     <style>
         :root,
-        html[data-theme="day"] {
-            color-scheme: light;
-            --canvas: #ffffff;
-            --card-bg: #eeece7;
-            --card-hover-bg: #e5e2dc;
-            --card-border: transparent;
-            --card-hover-border: #17171c;
-            --primary: #17171c;
-            --ink: #212121;
-            --body-muted: #616161;
-            --slate: #75758a;
-            --hairline: #d9d9dd;
-            --deep-green: #003c33;
-            --coral: #ff7759;
-            --focus-blue: #4c6ee6;
-            --cta-bg: #17171c;
-            --cta-text: #ffffff;
-            --cta-hover-bg: #003c33;
-            --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
-            --font-sans: 'Inter', Arial, ui-sans-serif, system-ui, sans-serif;
-            --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        html[data-theme="night"] {
+            color-scheme: dark;
+            --primary: #ffffff;
+            --on-primary: #0a0a0a;
+            --ink: #ffffff;
+            --ink-hover: #fafaf7;
+            --body: #dadbdf;
+            --body-mid: #7d8187;
+            --mute: #7d8187;
+            --hairline: #212327;
+            --canvas: #0a0a0a;
+            --canvas-soft: #1a1c20;
+            --canvas-card: #191919;
+            --canvas-mid: #363a3f;
+            --accent-sunset: #ff7a17;
+            --translucent-border: rgba(255, 255, 255, 0.25);
+            --translucent-border-hover: rgba(255, 255, 255, 0.65);
+            --font-display: "Inter", system-ui, -apple-system, sans-serif;
+            --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+            --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root:not([data-theme="day"]) {
-                color-scheme: dark;
-                --canvas: #0c0c0e;
-                --card-bg: #17171c;
-                --card-hover-bg: #1f1f26;
-                --card-border: rgba(255, 255, 255, 0.12);
-                --card-hover-border: rgba(255, 255, 255, 0.45);
-                --primary: #ffffff;
-                --ink: #ffffff;
-                --body-muted: rgba(255, 255, 255, 0.68);
-                --slate: #93939f;
-                --hairline: rgba(255, 255, 255, 0.12);
-                --cta-bg: #ffffff;
-                --cta-text: #17171c;
-                --cta-hover-bg: #edfce9;
+        @media (prefers-color-scheme: light) {
+            :root:not([data-theme="night"]) {
+                color-scheme: light;
+                --primary: #0a0a0a;
+                --on-primary: #ffffff;
+                --ink: #0a0a0a;
+                --ink-hover: #191919;
+                --body: #363a3f;
+                --body-mid: #686c73;
+                --mute: #686c73;
+                --hairline: #e2e4e8;
+                --canvas: #fafafa;
+                --canvas-soft: #eff0f3;
+                --canvas-card: #f2f3f5;
+                --canvas-mid: #dadbdf;
+                --accent-sunset: #ff7a17;
+                --translucent-border: rgba(10, 10, 10, 0.24);
+                --translucent-border-hover: rgba(10, 10, 10, 0.65);
             }
         }
 
-        html[data-theme="night"] {
-            color-scheme: dark;
-            --canvas: #0c0c0e;
-            --card-bg: #17171c;
-            --card-hover-bg: #1f1f26;
-            --card-border: rgba(255, 255, 255, 0.12);
-            --card-hover-border: rgba(255, 255, 255, 0.45);
-            --primary: #ffffff;
-            --ink: #ffffff;
-            --body-muted: rgba(255, 255, 255, 0.68);
-            --slate: #93939f;
-            --hairline: rgba(255, 255, 255, 0.12);
-            --cta-bg: #ffffff;
-            --cta-text: #17171c;
-            --cta-hover-bg: #edfce9;
+        html[data-theme="day"] {
+            color-scheme: light;
+            --primary: #0a0a0a;
+            --on-primary: #ffffff;
+            --ink: #0a0a0a;
+            --ink-hover: #191919;
+            --body: #363a3f;
+            --body-mid: #686c73;
+            --mute: #686c73;
+            --hairline: #e2e4e8;
+            --canvas: #fafafa;
+            --canvas-soft: #eff0f3;
+            --canvas-card: #f2f3f5;
+            --canvas-mid: #dadbdf;
+            --accent-sunset: #ff7a17;
+            --translucent-border: rgba(10, 10, 10, 0.24);
+            --translucent-border-hover: rgba(10, 10, 10, 0.65);
         }
 
         * {
@@ -86,111 +89,111 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            min-width: 0;
+        }
+
         body {
             background-color: var(--canvas);
             color: var(--ink);
             font-family: var(--font-sans);
             font-size: 16px;
             font-weight: 400;
-            line-height: 1.5;
+            line-height: 24px;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
-            transition: background-color 0.18s ease, color 0.18s ease;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color 0.15s ease, color 0.15s ease;
         }
 
-        .top-bar {
-            background-color: var(--deep-green);
-            height: 6px;
-            width: 100%;
+        /* Nav / Compact Header Bar */
+        .nav-bar {
+            border-bottom: 1px solid var(--hairline);
+            padding: 16px 24px;
         }
 
-        .page {
+        .nav-inner {
             max-width: 1120px;
             margin: 0 auto;
-            padding: 48px 24px 72px;
-        }
-
-        header {
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--hairline);
-            margin-bottom: 36px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             justify-content: space-between;
-            gap: 16px 24px;
-        }
-
-        .header-main {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
             gap: 12px 24px;
         }
 
-        .brand {
+        .brand-group {
             display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 9999px;
-            background-color: var(--coral);
-            flex-shrink: 0;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 10px 20px;
         }
 
         h1 {
             font-family: var(--font-display);
-            font-size: clamp(32px, 4.5vw, 44px);
+            font-size: 28px;
             font-weight: 400;
-            line-height: 1;
-            letter-spacing: -0.02em;
-            color: var(--primary);
+            line-height: 32px;
+            letter-spacing: -0.8px;
+            color: var(--ink);
         }
 
         .subtitle {
-            font-size: 15px;
-            color: var(--body-muted);
-            line-height: 1.45;
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 20px;
+            color: var(--body-mid);
         }
 
         .subtitle .sep {
-            color: var(--slate);
             margin: 0 8px;
+            color: var(--body-mid);
         }
 
-        .theme-toggle {
+        .pill-btn {
             background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--hairline);
-            border-radius: 30px;
-            padding: 7px 14px;
-            font-family: var(--font-mono);
-            font-size: 12px;
+            color: var(--ink);
+            border: 1px solid var(--translucent-border);
+            border-radius: 9999px;
+            padding: 4px 14px;
+            height: 32px;
+            font-family: var(--font-sans);
+            font-size: 14px;
             font-weight: 400;
-            letter-spacing: 0.04em;
+            line-height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
             cursor: pointer;
             transition: border-color 0.15s ease, background-color 0.15s ease;
             white-space: nowrap;
         }
 
-        .theme-toggle:hover {
-            border-color: var(--primary);
-            background-color: var(--card-bg);
+        .pill-btn:hover {
+            border-color: var(--translucent-border-hover);
+            background-color: var(--canvas-soft);
         }
 
-        .theme-toggle:focus-visible {
-            outline: 2px solid var(--focus-blue);
+        .pill-btn:focus-visible,
+        .card-content:focus-visible {
+            outline: 1px solid var(--ink);
             outline-offset: 2px;
+        }
+
+        /* Content Band */
+        .content-band {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 48px 24px 64px;
         }
 
         .columns {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 32px;
+            gap: 24px;
         }
 
         .lang-col {
@@ -199,211 +202,202 @@
             gap: 16px;
         }
 
-        .lang-label {
-            font-family: var(--font-mono);
-            font-size: 13px;
-            font-weight: 400;
-            line-height: 1.4;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--ink);
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--hairline);
+        .eyebrow-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--hairline);
         }
 
-        .lang-code {
-            color: var(--coral);
-            font-weight: 500;
+        .eyebrow-mono {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 20px;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--ink);
         }
 
-        .product-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
+        .eyebrow-code {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 16px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--accent-sunset);
+        }
+
+        /* Card Content (xAI card-feature-product) */
+        .card-content {
+            background-color: var(--canvas-card);
+            border: 1px solid var(--hairline);
             border-radius: 8px;
-            padding: 28px;
+            padding: 24px;
             text-decoration: none;
             color: var(--ink);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 20px;
-            transition: background-color 0.15s ease, border-color 0.15s ease;
+            gap: 24px;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
         }
 
-        .product-card:hover {
-            background-color: var(--card-hover-bg);
-            border-color: var(--card-hover-border);
+        .card-content:hover {
+            background-color: var(--canvas-soft);
+            border-color: var(--translucent-border-hover);
         }
 
-        .product-card:focus-visible {
-            outline: 2px solid var(--focus-blue);
-            outline-offset: 2px;
+        .card-content:hover .pill-btn {
+            border-color: var(--translucent-border-hover);
         }
 
         .card-title {
             font-family: var(--font-display);
             font-size: 24px;
             font-weight: 400;
-            line-height: 1.25;
-            letter-spacing: -0.01em;
-            color: var(--primary);
+            line-height: 30px;
+            letter-spacing: -0.5px;
+            color: var(--ink);
             margin-bottom: 8px;
         }
 
         .card-desc {
+            font-family: var(--font-sans);
             font-size: 15px;
-            line-height: 1.5;
-            color: var(--body-muted);
+            font-weight: 400;
+            line-height: 22px;
+            color: var(--body);
         }
 
         .card-footer {
-            padding-top: 16px;
-            border-top: 1px solid var(--hairline);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
         }
 
-        .pill-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: var(--cta-bg);
-            color: var(--cta-text);
-            font-family: var(--font-sans);
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1;
-            padding: 10px 18px;
-            border-radius: 32px;
-            transition: background-color 0.15s ease, color 0.15s ease;
-        }
-
-        .product-card:hover .pill-cta {
-            background-color: var(--cta-hover-bg);
-        }
-
-        .path-label {
+        .caption-mono-sm {
             font-family: var(--font-mono);
             font-size: 12px;
-            color: var(--slate);
-            letter-spacing: 0.02em;
+            font-weight: 400;
+            line-height: 16px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--body-mid);
         }
 
         @media (max-width: 768px) {
-            .page {
-                padding: 32px 20px 56px;
+            .content-band {
+                padding: 32px 16px 48px;
+            }
+
+            .nav-bar {
+                padding: 16px;
             }
 
             .columns {
                 grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .product-card {
-                padding: 24px;
+                gap: 36px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="top-bar" aria-hidden="true"></div>
-    <main class="page">
-        <header>
-            <div class="header-main">
-                <div class="brand">
-                    <span class="brand-dot" aria-hidden="true"></span>
-                    <h1>IFPTRD</h1>
-                </div>
+    <header class="nav-bar">
+        <div class="nav-inner">
+            <div class="brand-group">
+                <h1>IFPTRD</h1>
                 <p class="subtitle">
                     Experimental, unclassified productivity tools
                     <span class="sep" aria-hidden="true">/</span>
                     <span lang="fr-CA">Outils de productivité expérimentaux et non classifiés</span>
                 </p>
             </div>
-            <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch color theme / Changer le thème"></button>
-        </header>
+            <button type="button" id="themeToggle" class="pill-btn" aria-label="Switch color theme / Changer le thème"></button>
+        </div>
+    </header>
 
+    <main class="content-band">
         <div class="columns">
             <section class="lang-col" aria-labelledby="heading-en">
-                <h2 class="lang-label" id="heading-en">
-                    <span>English</span>
-                    <span class="lang-code">EN</span>
-                </h2>
+                <div class="eyebrow-row">
+                    <h2 class="eyebrow-mono" id="heading-en">English</h2>
+                    <span class="eyebrow-code">EN</span>
+                </div>
 
-                <a href="https://ifptrd.github.io/newslinks/" class="product-card">
+                <a href="https://ifptrd.github.io/newslinks/" class="card-content">
                     <div>
                         <h3 class="card-title">News Links</h3>
                         <p class="card-desc">Canadian health news and official provincial and territorial releases.</p>
                     </div>
                     <div class="card-footer">
-                        <span class="pill-cta">Open tool <span aria-hidden="true">→</span></span>
-                        <span class="path-label">/newslinks</span>
+                        <span class="pill-btn">Open <span aria-hidden="true">↗</span></span>
+                        <span class="caption-mono-sm">/newslinks</span>
                     </div>
                 </a>
 
-                <a href="https://ifptrd.github.io/timezones/" class="product-card">
+                <a href="https://ifptrd.github.io/timezones/" class="card-content">
                     <div>
                         <h3 class="card-title">Canadian Time Zones</h3>
                         <p class="card-desc">Compare local times across provincial and territorial capitals.</p>
                     </div>
                     <div class="card-footer">
-                        <span class="pill-cta">Open tool <span aria-hidden="true">→</span></span>
-                        <span class="path-label">/timezones</span>
+                        <span class="pill-btn">Open <span aria-hidden="true">↗</span></span>
+                        <span class="caption-mono-sm">/timezones</span>
                     </div>
                 </a>
 
-                <a href="https://ifptrd.github.io/markdown-converter/" class="product-card">
+                <a href="https://ifptrd.github.io/markdown-converter/" class="card-content">
                     <div>
                         <h3 class="card-title">Markdown Converter</h3>
                         <p class="card-desc">Convert formatted text to Markdown — useful for pasting into Microsoft Copilot.</p>
                     </div>
                     <div class="card-footer">
-                        <span class="pill-cta">Open tool <span aria-hidden="true">→</span></span>
-                        <span class="path-label">/markdown-converter</span>
+                        <span class="pill-btn">Open <span aria-hidden="true">↗</span></span>
+                        <span class="caption-mono-sm">/markdown-converter</span>
                     </div>
                 </a>
             </section>
 
             <section class="lang-col" lang="fr-CA" aria-labelledby="heading-fr">
-                <h2 class="lang-label" id="heading-fr">
-                    <span>Français</span>
-                    <span class="lang-code">FR</span>
-                </h2>
+                <div class="eyebrow-row">
+                    <h2 class="eyebrow-mono" id="heading-fr">Français</h2>
+                    <span class="eyebrow-code">FR</span>
+                </div>
 
-                <a href="https://ifptrd.github.io/newslinks/index_fr.html" class="product-card">
+                <a href="https://ifptrd.github.io/newslinks/index_fr.html" class="card-content">
                     <div>
                         <h3 class="card-title">Liens de nouvelles</h3>
                         <p class="card-desc">Nouvelles sur la santé au Canada et communiqués officiels des provinces et territoires.</p>
                     </div>
                     <div class="card-footer">
-                        <span class="pill-cta">Ouvrir l’outil <span aria-hidden="true">→</span></span>
-                        <span class="path-label">/newslinks/index_fr.html</span>
+                        <span class="pill-btn">Ouvrir <span aria-hidden="true">↗</span></span>
+                        <span class="caption-mono-sm">/newslinks/index_fr.html</span>
                     </div>
                 </a>
 
-                <a href="https://ifptrd.github.io/timezones/?lang=fr" class="product-card">
+                <a href="https://ifptrd.github.io/timezones/?lang=fr" class="card-content">
                     <div>
                         <h3 class="card-title">Fuseaux horaires canadiens</h3>
                         <p class="card-desc">Comparez l’heure locale des capitales provinciales et territoriales.</p>
                     </div>
                     <div class="card-footer">
-                        <span class="pill-cta">Ouvrir l’outil <span aria-hidden="true">→</span></span>
-                        <span class="path-label">/timezones/?lang=fr</span>
+                        <span class="pill-btn">Ouvrir <span aria-hidden="true">↗</span></span>
+                        <span class="caption-mono-sm">/timezones/?lang=fr</span>
                     </div>
                 </a>
 
-                <a href="https://ifptrd.github.io/markdown-converter/#instructions-fr" class="product-card">
+                <a href="https://ifptrd.github.io/markdown-converter/#instructions-fr" class="card-content">
                     <div>
                         <h3 class="card-title">Convertisseur Markdown</h3>
                         <p class="card-desc">Convertissez du texte formaté en Markdown — pratique pour coller dans Microsoft Copilot.</p>
                     </div>
                     <div class="card-footer">
-                        <span class="pill-cta">Ouvrir l’outil <span aria-hidden="true">→</span></span>
-                        <span class="path-label">/markdown-converter</span>
+                        <span class="pill-btn">Ouvrir <span aria-hidden="true">↗</span></span>
+                        <span class="caption-mono-sm">/markdown-converter</span>
                     </div>
                 </a>
             </section>
