@@ -3,7 +3,7 @@ name: refract-guide-authoring
 description: Automatically create a complete downloadable editable Refract HTML guide whenever a document is attached or selected in this dedicated agent, without requiring a user prompt. Adapt structure to the document, verify source fidelity and readability, and render with the bundled high-contrast template.
 ---
 
-# Refract — Adaptive Guide Authoring (v6.1)
+# Refract — Adaptive Guide Authoring (v6.2)
 
 ## Automatic invocation from an attachment — mandatory
 
@@ -17,11 +17,32 @@ The fixed renderer owns the colour system. Do not introduce arbitrary text/backg
 
 ## Mission
 
-Your goal is **not to summarize a document or recreate its table of contents**. Your goal is to use reasoning to make its information **clearer, easier to find, easier to understand, and more useful for the reader**. Create a complete standalone HTML guide using the packaged Refract renderer. The resulting HTML must remain editable through Refract Studio's Import HTML workflow.
+Your goal is to make the original source material **a complete, clearer, easier-to-use digital replacement**, not a shortened companion, executive abstract, or selective summary. Retain substantive source information while reorganizing it for navigation, comprehension, and practical use. Create a complete standalone HTML guide using the packaged Refract renderer. The resulting HTML must remain editable through Refract Studio's Import HTML workflow.
 
 **Do not default to an executive playbook.** That was one application, not the product's universal structure. Do not automatically add "Your Role," "Decision Aid," "Governance," "Escalation," "Incident Timeline," "Partners," or "Quick Reference." Choose those only where the source and reader's actual needs warrant them.
 
-Read `references/adaptive-editorial.md`, `references/format.md`, `references/design-standard.md` and `references/refract-schema.json` before planning the output.
+Read `references/adaptive-editorial.md`, `references/source-coverage.md`, `references/format.md`, `references/design-standard.md` and `references/refract-schema.json` before planning the output.
+
+## Primary contract: source-equivalent replacement, not supplementary advice
+
+The generated HTML must be an **adequate standalone replacement** for the source documents within the rendering format's capabilities. A reader should not routinely have to reopen the source to recover essential agendas, issue briefs, meeting details, evidence, requirements, annex information or supporting materials.
+
+- **Preserve all substantive content by default.** Do not aggressively condense a long binder into a short briefing. Streamline redundant writing and improve layout; do not discard distinct issues, agenda items, briefing notes, meeting objectives, background, facts, risks, options, recommendations, questions, schedules, decisions, annexes, reference tables, or necessary context.
+- **Match the source's genre.** A meeting e-binder should be organized like an improved interactive e-binder, with a meeting overview and agenda, then issue- or agenda-specific briefing pages, relevant talking points *only if supplied*, and associated annexes/reference material. It is not automatically an executive intervention coach, negotiation playbook, or advice about managing difficult exchanges.
+- **Do not fabricate guidance.** Never add "interventions," "handling difficult exchanges," suggested speeches, "what to say," probing questions, anticipated objections, escalation paths, strategic recommendations, or other coaching that is not contained in the sources or expressly requested. Source-derived remarks/lines and genuine briefing advice **must** be preserved where present.
+- **Use faithful page titles.** Retain distinct agenda item names and issue-specific briefing titles unless a minor readability edit makes them clearer. Make important material discoverable in sidebar navigation and search. Related pages may be nested under a meeting or subject group.
+- **Retain the correct depth.** Large input warrants a large, navigable output if necessary. A 40-page binder should not automatically become a four-page digest. There is no target compression ratio or maximum page count; do not truncate to satisfy an artificial brevity goal. Prefer long-form substantive pages, nested sections and tables over dropping coverage.
+- **Source documents remain authoritative.** Preserve wording exactly for formal motions, agenda items, proposed decisions, recommendations, quotations, statutory language, numbers, financial values, dates, participant names, conditions, and other precision-sensitive passages where possible. Clearly distinguish actual source facts and source-proposed positions from any editorial organization.
+- **Keep working attachments useful.** Preserve real URLs and document references, including annex titles. If a source contains essential images, charts, seating plans, complex tables, or embedded files that the renderer cannot retain accurately, do **not** silently omit or invent them. Flag the limitation honestly and do not claim full replacement until critical assets are handled.
+- **No added process boilerplate.** Do not create generic "Context," "Considerations," "Interventions," "Difficult exchanges," or "How to respond" sections merely because the audience is senior. Such headings are permitted only when the source explicitly contains relevant material or the user asks for it.
+
+### Required source coverage inventory (especially for large files)
+
+Before drafting pages, create an **internal source inventory** of all substantive content units from the entire source, not just its opening sections or table of contents. For an e-binder this includes each meeting, agenda, agenda item, item-specific briefing note, supporting issue note, decision/action requested, annex, attachment and reference section, with identifying headings.
+
+Map every item to one or more destination Refract page IDs; mark a source item excluded only if truly duplicative, blank, or explicitly outside user scope, and record the reason. For substantial sources, save an internal `source-inventory.json` alongside the intermediate `guide.json` and run the bundled `scripts/check_coverage.py` before HTML rendering. This catches unassigned inventory items and broken page mappings; it is **not** proof that the original source was fully read, so manually cross-check source headings and key detail.
+
+If the source is too long to process reliably in one response, process it **in sections** and assemble a complete intermediate guide before rendering. Do not deliver only the first few sections and call that a complete binder. If material is inaccessible or exceeds actual tool/context capability, disclose the remaining limitation instead of silently reducing scope.
 
 ## 1. Reason from the material: private editorial plan
 
@@ -29,7 +50,7 @@ Read all accessible relevant source documents. Before creating guide content, si
 
 1. **Who is this for?** Their role, familiarity, accessibility and subject knowledge. If audience is not specified, infer conservatively from the source, without inventing a narrow role.
 2. **Why would someone open it?** To learn concepts, perform tasks, navigate policy, troubleshoot, make decisions, coordinate work, find facts, or prepare for an event? It may serve more than one purpose.
-3. **What is essential?** Distinguish core information, actionable requirements, background, exceptions, supporting detail and reference material.
+3. **What is present and must remain available?** Inventory substantive agenda items, issue briefs, meeting material, requirements, annexes, background, exceptions and reference content before deciding what can be combined.
 4. **What is the natural structure?** Organize by task, question, workflow, concept, topic or reference lookup. The document's existing section order is evidence, not a required website navigation structure.
 5. **Which format communicates each idea best?** Plain prose, a meaningful table, steps, an accurate timeline, a genuinely supported diagram, cards or definitions. Avoid decorative components.
 6. **What must never be altered or lost?** Specific facts, numbers, mandatory requirements, conditions, exceptions, version/scope distinctions, responsibilities, uncertainty and source terminology.
@@ -40,8 +61,8 @@ If the user provides a specific audience, outcome, structure or tone, honor it. 
 
 ## 2. Transform content through editorial judgment
 
-- **Synthesize and simplify.** Remove duplication, combine dispersed but related facts, use clear headings, move detail to the place it will be needed, and convert difficult prose into more usable structured material where justified.
-- **Preserve substance.** Do not replace nuanced source material with broad generic advice. Condense repetitive wording, not essential meanings, exceptions, caveats or dependencies.
+- **Reorganize without material loss.** Remove true duplication and improve clarity while retaining each distinct issue, briefing note, meeting agenda item and necessary supporting fact. Never use a fixed target length or aggressive summarization to reduce a binder.
+- **Preserve original substance and genre.** Do not replace actual source meeting content or issue-specific briefing notes with generic advice, intervention coaching, or a shorter supplementary decision aid. Condense only unnecessary repetition.
 - **Prioritize retrieval.** The opening should answer the reader's most urgent question or establish the concept needed to use the rest. It need not be a hero, role statement or checklist.
 - **Allow appropriate depth.** Use focused pages and useful subpages as needed; never target an arbitrary page count, uniformly short page length or fixed block count. Complex sources can remain detailed.
 - **Write for expertise.** A novice may need definitions, sequence and worked context. A specialist may need exact parameters and constraints. A senior leader may need decisions and escalation paths—but only if relevant.
@@ -71,13 +92,13 @@ Select blocks by semantic fit, **not by perceived visual sophistication**. Only 
 
 Before creating HTML, perform two independent silent reviews:
 
-**Fidelity pass:** Check whether the guide remains accurate and complete for its purpose, particularly conditions, exceptions, numbers, definitions, scope, established-versus-proposed status, and genuine links. Verify information is present only where its source warrants it.
+**Fidelity and replacement pass:** Cross-check the source inventory against the guide and confirm all distinct agenda items, issue-specific briefing notes, associated meeting details, annex information, substantive background, conditions, exceptions, numbers, definitions, scope, proposed-versus-established status, and genuine links remain accessible. Verify information is present only where its source warrants it.
 
 **Usefulness pass:** Check whether the reader can find the likely answer quickly; opening content helps their actual task; the site is not a copied table of contents; headings are distinctive; structure is not over-compressed or fragmented; layouts serve information rather than decoration. Consider a reader who knows nothing about the source filename and navigates using only page titles.
 
 If Python execution and file delivery are available:
 1. Save the full intermediate JSON as `guide.json`.
-2. Run `python scripts/validate_refract.py guide.json`; correct all structural errors and inappropriate editorial warnings.
+2. For multi-section documents, save `source-inventory.json` and run `python scripts/check_coverage.py source-inventory.json guide.json`; resolve missing mappings, then check the underlying source content manually. Run `python scripts/validate_refract.py guide.json`; correct all structural errors and inappropriate editorial warnings.
 3. Run `python scripts/render_refract.py guide.json --output guide.html --fail-on-warnings`.
 4. Verify the HTML exists and contains embedded `script#guide-data`, navigation, search, print and the source-backed content. Return the downloadable standalone HTML file—not the JSON or HTML source code.
 
