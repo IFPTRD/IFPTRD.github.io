@@ -217,7 +217,7 @@ $('previewBtn').onclick=()=>{const data=prepare();if(data)$('frame').srcdoc=buil
 $('exportBtn').onclick=()=>{const data=prepare();if(data){const basename=(data.meta.title||'reference-guide').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'reference-guide';download(build(data),basename+'.html','text/html;charset=utf-8')}};
 $('saveBtn').onclick=()=>{const data=prepare();if(data)download(JSON.stringify(data,null,2)+'\n','guide-content.json','application/json;charset=utf-8')};
 $('sampleBtn').onclick=()=>{field.value=JSON.stringify(defaultData,null,2);$('previewBtn').click()};
-$('jsonFileImport').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;try{field.value=await f.text();$('previewBtn').click();if(typeof visualState!=='undefined'&&visualState.mode==='visual')switchEditor('visual')}catch(err){feedback('Unable to open JSON: '+err.message,true)}e.target.value=''});field.value=JSON.stringify(defaultData,null,2);$('previewBtn').click();
+$('jsonFileImport').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{loadGuideSource(await file.text(),'json',file.name)}catch(err){feedback('Could not read JSON: '+err.message,true)}finally{e.target.value=''}});field.value=JSON.stringify(defaultData,null,2);$('previewBtn').click();
 
 /* Refract visual content editor. Editing mutates only local JSON; preview and export use the same data. */
 const visualState={data:null,page:0,block:0,mode:'visual'};
@@ -366,6 +366,79 @@ $('frame').addEventListener('load',()=>{
  const p=visualState.data?.pages?.[visualState.page];
  if(p)previewSelect(p.id,Number.isInteger(visualState.block)?visualState.block:null)
 });
+
+/* Resume a guide from exported Refract HTML (lossless), or convert ordinary HTML approximately. */
+function cleanImportText(value){return String(value||'').replace(/\s+/g,' ').trim()}
+function importStaticHtml(content,fileName){
+ // Parsing as inert HTML avoids executing scripts from the imported file.
+ const doc=new DOMParser().parseFromString(content.replace(/<(?:img|iframe|audio|video|source)\b[^>]*>/gi,''),'text/html');
+ const embedded=doc.getElementById('guide-data')||doc.querySelector('script[type="application/json"][data-refract-guide]');
+ if(embedded){
+  let data;try{data=JSON.parse(embedded.textContent)}catch(e){throw Error('Embedded Refract guide data is invalid: '+e.message)}
+  return {data,exact:true};
+ }
+ if(!window.confirm('This HTML does not contain Refract guide data. Convert its text and tables to editable pages? The original layout, interactive features, styles, and scripts cannot be preserved. Review the converted guide carefully.'))return null;
+ const roots=[...doc.querySelectorAll('main .section[id]')];
+ let elements=roots.length?roots:[...doc.querySelectorAll('main > section[id],article > section[id],main > section.page')];
+ if(!elements.length){const root=doc.querySelector('main')||doc.querySelector('article')||doc.body;elements=[root]}
+ const used=new Set();
+ const allowed=(node)=>node&&node.nodeType===1&&!/^(SCRIPT|STYLE|NOSCRIPT|NAV|FOOTER|BUTTON|INPUT|SELECT|TEXTAREA|SVG|CANVAS)$/.test(node.tagName)&&!node.matches('.page-footer,.site-nav,.sidebar,[aria-hidden="true"]');
+ function blockify(root){
+  const blocks=[];let heading='';
+  function walk(node){
+   if(!allowed(node)||blocks.length>=125)return;
+   const tag=node.tagName;
+   if(/^H[1-6]$/.test(tag)){if(tag!=='H1')heading=cleanImportText(node.textContent);return}
+   if(tag==='TABLE'){
+    const trs=[...node.querySelectorAll('tr')], cells=tr=>[...tr.children].filter(x=>x.matches('th,td')).map(x=>cleanImportText(x.textContent));
+    if(trs.length){
+     let cols=cells(trs[0]),rows=trs.slice(1).map(cells);
+     if(!trs[0].querySelector('th')){rows=trs.map(cells);cols=cols.map((_,i)=>'Column '+(i+1))}
+     if(cols.length&&rows.length)blocks.push({type:'table',title:heading||'Table',columns:cols,rows:rows.map(r=>cols.map((_,i)=>r[i]||''))});
+    }heading='';return
+   }
+   if(tag==='UL'||tag==='OL'){const items=[...node.children].filter(x=>x.tagName==='LI').map(x=>cleanImportText(x.textContent)).filter(Boolean);if(items.length)blocks.push({type:'bullets',title:heading||'Key points',items});heading='';return}
+   if(tag==='P'||tag==='BLOCKQUOTE'){const text=cleanImportText(node.textContent);if(text)blocks.push({type:'paragraph',title:heading||'Details',text});heading='';return}
+   if(tag==='ASIDE'){const text=cleanImportText(node.textContent);if(text)blocks.push({type:'note',label:heading||'Note',text});heading='';return}
+   if(tag==='A'&&/^https?:\/\//i.test(node.getAttribute('href')||'')&&!node.children.length){const title=cleanImportText(node.textContent);if(title)blocks.push({type:'resources',title:heading||'References',items:[{title,url:node.getAttribute('href')}]});heading='';return}
+   if(node.children.length){for(const child of node.children)walk(child)}
+   else if(node.childNodes.length===1&&node.childNodes[0].nodeType===3){const text=cleanImportText(node.textContent);if(text.length>22){blocks.push({type:'paragraph',title:heading||'Details',text});heading=''}}
+  }
+  for(const child of root.children)walk(child);
+  return blocks;
+ }
+ const pages=elements.map((el,i)=>{
+  const title=cleanImportText(el.querySelector('h1,h2')?.textContent)||'Page '+(i+1);
+  let id=String(el.id||title).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'page-'+(i+1);
+  const base=id;let c=2;while(used.has(id))id=base+'-'+c++;used.add(id);
+  const blocks=blockify(el);
+  if(!blocks.length){const text=cleanImportText(el.textContent);if(text)blocks.push({type:'paragraph',title:'Content',text})}
+  return {id,title,intro:'',blocks};
+ });
+ const title=cleanImportText(doc.querySelector('title')?.textContent)||fileName.replace(/\.html?$/i,'')||'Imported HTML guide';
+ return {data:{meta:{title,subtitle:'Converted from HTML — review before sharing',audience:''},pages,glossary:[]},exact:false};
+}
+function loadGuideSource(raw,kind,fileName){
+ let data,exact=true;
+ if(kind==='html'){const result=importStaticHtml(raw,fileName);if(!result)return;data=result.data;exact=result.exact}
+ else{
+  try{data=JSON.parse(raw)}catch(e){try{data=JSON.parse(normalizeCopilotJson(raw).text)}catch(err){throw Error('Invalid JSON: '+err.message)}}
+ }
+ const changes=normalizeDataShape(data),result=validate(data);
+ if(result.errors.length){feedback('Import needs corrections before it can be used:\n• '+result.errors.slice(0,12).join('\n• ')+(result.errors.length>12?'\n… and '+(result.errors.length-12)+' more.':''),true);return}
+ visualState.page=0;visualState.block=0;visualState.data=data;
+ field.value=JSON.stringify(data,null,2);
+ if(visualState.mode==='visual')renderVisual();else switchEditor('visual');
+ $('previewBtn').click();
+ $('saveStatus').textContent=(exact?'Imported: ':'Converted: ')+fileName;
+ feedback(exact?'Imported '+data.pages.length+' editable pages from '+fileName+'.':'Converted '+data.pages.length+' pages from HTML. This is approximate: review every page, link and table before exporting.');
+ if(changes.length)$('saveStatus').textContent+=' · standardized '+changes.length+' fields';
+}
+$('htmlFileImport').addEventListener('change',async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ try{loadGuideSource(await file.text(),'html',file.name)}catch(err){feedback('Could not import HTML: '+err.message,true)}finally{e.target.value=''}
+});
+
 switchEditor('visual');
 
 </script></body></html>
