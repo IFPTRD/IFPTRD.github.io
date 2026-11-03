@@ -9,3 +9,11 @@
 - For technical manuals with necessary diagrams, screenshots or exact figures, Refract's structured components cannot reproduce arbitrary artwork or native interactions. Do not fake them. The editor can be used to incorporate approved assets where supported in future revisions.
 - Do not embed user source material into the public Refract site, and do not add provenance or distribution boilerplate to reader-facing pages unless requested.
 - Test meaningful navigation, print layout, mobile width and browser use when tools permit. Check all internal links, exact external URL strings, and source-supported content.
+
+## Mandatory contrast and accessibility requirements
+
+- **Text contrast is a hard quality gate**, not a style preference: 4.5:1 minimum for standard text and 3:1 for large text (WCAG AA), including muted labels, sidebar items, captions and footer links. Do not rely on an appealing palette alone.
+- The shared renderer's **hero banner** has a dark navy gradient. Force the hero heading, body copy, and kicker to white/very light values *after* general page heading rules so a dark page-heading colour cannot cascade onto a dark banner. On the prior exercise guide, the text “Turn operating pressure into an actionable decision” failed due to this cascade.
+- For small secondary text on light backgrounds, choose dark slate or another verified AA-safe colour rather than pale grey. Check every interactive state including selected navigation and hover/disabled treatments.
+- Maintain high-contrast focus indicators, link distinctions, readable table headers and print text. In print, dark-on-white takes precedence over coloured panels.
+- The authoring agent must use the bundled template; it must not invent arbitrary theme CSS or colour attributes in the JSON. Verify generated HTML if browser or CSS inspection is available.
