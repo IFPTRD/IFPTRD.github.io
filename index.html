@@ -5,18 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="IFPTRD experimental, unclassified productivity tools / Outils de productivité expérimentaux et non classifiés d’IFPTRD.">
     <title>IFPTRD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-start: #141e30;
-            --bg-end: #1a2942;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --card-hover-bg: rgba(255, 255, 255, 0.09);
-            --card-border: rgba(255, 255, 255, 0.12);
-            --card-hover-border: #60a5fa;
-            --text-main: #f8fafc;
-            --text-muted: #cbd5e1;
-            --text-subtle: #94a3b8;
-            --accent: #60a5fa;
+            --canvas: #ffffff;
+            --soft-stone: #eeece7;
+            --soft-stone-hover: #e5e2dc;
+            --primary: #17171c;
+            --ink: #212121;
+            --body-muted: #616161;
+            --slate: #75758a;
+            --hairline: #d9d9dd;
+            --deep-green: #003c33;
+            --coral: #ff7759;
+            --action-blue: #1863dc;
+            --focus-blue: #4c6ee6;
+            --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+            --font-sans: 'Inter', Arial, ui-sans-serif, system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         }
 
         * {
@@ -26,186 +34,288 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
-            min-height: 100vh;
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2.5rem 1.25rem;
+            background-color: var(--canvas);
+            color: var(--ink);
+            font-family: var(--font-sans);
+            font-size: 16px;
+            font-weight: 400;
             line-height: 1.5;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .container {
+        .top-bar {
+            background-color: var(--deep-green);
+            height: 6px;
             width: 100%;
-            max-width: 860px;
+        }
+
+        .page {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 56px 24px 80px;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 2.25rem;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--hairline);
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 16px 32px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 9999px;
+            background-color: var(--coral);
+            flex-shrink: 0;
         }
 
         h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            margin-bottom: 0.4rem;
+            font-family: var(--font-display);
+            font-size: clamp(36px, 5vw, 52px);
+            font-weight: 400;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: var(--primary);
         }
 
         .subtitle {
-            color: var(--text-muted);
-            font-size: 0.98rem;
+            font-size: 15px;
+            color: var(--body-muted);
+            line-height: 1.45;
         }
 
-        .subtitle span {
-            color: var(--text-subtle);
+        .subtitle .sep {
+            color: var(--slate);
+            margin: 0 8px;
         }
 
         .columns {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.75rem;
+            gap: 32px;
         }
 
         .lang-col {
             display: grid;
             grid-template-rows: auto repeat(3, 1fr);
-            gap: 0.85rem;
+            gap: 16px;
         }
 
-        .col-heading {
-            font-size: 0.85rem;
-            font-weight: 600;
+        .lang-label {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.4;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--accent);
-            padding-bottom: 0.35rem;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .tool-link {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 1.15rem 1.3rem;
-            text-decoration: none;
-            color: var(--text-main);
-            transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
-        }
-
-        .tool-link:hover {
-            background: var(--card-hover-bg);
-            border-color: var(--card-hover-border);
-            transform: translateY(-2px);
-        }
-
-        .tool-link:focus-visible {
-            outline: 3px solid var(--accent);
-            outline-offset: 2px;
-        }
-
-        .tool-title {
+            color: var(--ink);
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--hairline);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
         }
 
-        .arrow {
-            color: var(--accent);
-            font-size: 1.1rem;
-            transition: transform 0.18s ease;
+        .lang-code {
+            color: var(--coral);
+            font-weight: 500;
         }
 
-        .tool-link:hover .arrow {
-            transform: translateX(3px);
+        .product-card {
+            background-color: var(--soft-stone);
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 28px;
+            text-decoration: none;
+            color: var(--ink);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+            transition: background-color 0.15s ease, border-color 0.15s ease;
         }
 
-        .tool-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
+        .product-card:hover {
+            background-color: var(--soft-stone-hover);
+            border-color: var(--primary);
         }
 
-        @media (max-width: 680px) {
+        .product-card:focus-visible {
+            outline: 2px solid var(--focus-blue);
+            outline-offset: 2px;
+        }
+
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .card-desc {
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--body-muted);
+        }
+
+        .card-footer {
+            padding-top: 16px;
+            border-top: 1px solid var(--hairline);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .pill-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--primary);
+            color: var(--canvas);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1;
+            padding: 10px 18px;
+            border-radius: 32px;
+            transition: background-color 0.15s ease;
+        }
+
+        .product-card:hover .pill-cta {
+            background-color: var(--deep-green);
+        }
+
+        .path-label {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--slate);
+            letter-spacing: 0.02em;
+        }
+
+        @media (max-width: 768px) {
+            .page {
+                padding: 36px 20px 56px;
+            }
+
             .columns {
                 grid-template-columns: 1fr;
-                gap: 2rem;
+                gap: 40px;
+            }
+
+            .product-card {
+                padding: 24px;
             }
         }
     </style>
 </head>
 <body>
-    <main class="container">
+    <div class="top-bar" aria-hidden="true"></div>
+    <main class="page">
         <header>
-            <h1>IFPTRD</h1>
+            <div class="brand">
+                <span class="brand-dot" aria-hidden="true"></span>
+                <h1>IFPTRD</h1>
+            </div>
             <p class="subtitle">
                 Experimental, unclassified productivity tools
-                <span aria-hidden="true"> · </span>
+                <span class="sep" aria-hidden="true">/</span>
                 <span lang="fr-CA">Outils de productivité expérimentaux et non classifiés</span>
             </p>
         </header>
 
         <div class="columns">
             <section class="lang-col" aria-labelledby="heading-en">
-                <h2 class="col-heading" id="heading-en">English</h2>
+                <h2 class="lang-label" id="heading-en">
+                    <span>English</span>
+                    <span class="lang-code">EN</span>
+                </h2>
 
-                <a href="https://ifptrd.github.io/newslinks/" class="tool-link">
-                    <span class="tool-title">
-                        <span>News Links</span>
-                        <span class="arrow" aria-hidden="true">→</span>
-                    </span>
-                    <span class="tool-desc">Canadian health news and official provincial and territorial releases.</span>
+                <a href="https://ifptrd.github.io/newslinks/" class="product-card">
+                    <div>
+                        <h3 class="card-title">News Links</h3>
+                        <p class="card-desc">Canadian health news and official provincial and territorial releases.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="pill-cta">Open tool <span aria-hidden="true">→</span></span>
+                        <span class="path-label">/newslinks</span>
+                    </div>
                 </a>
 
-                <a href="https://ifptrd.github.io/timezones/" class="tool-link">
-                    <span class="tool-title">
-                        <span>Canadian Time Zones</span>
-                        <span class="arrow" aria-hidden="true">→</span>
-                    </span>
-                    <span class="tool-desc">Compare local times across provincial and territorial capitals.</span>
+                <a href="https://ifptrd.github.io/timezones/" class="product-card">
+                    <div>
+                        <h3 class="card-title">Canadian Time Zones</h3>
+                        <p class="card-desc">Compare local times across provincial and territorial capitals.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="pill-cta">Open tool <span aria-hidden="true">→</span></span>
+                        <span class="path-label">/timezones</span>
+                    </div>
                 </a>
 
-                <a href="https://ifptrd.github.io/markdown-converter/" class="tool-link">
-                    <span class="tool-title">
-                        <span>Markdown Converter</span>
-                        <span class="arrow" aria-hidden="true">→</span>
-                    </span>
-                    <span class="tool-desc">Convert formatted text to Markdown — useful for pasting into Microsoft Copilot.</span>
+                <a href="https://ifptrd.github.io/markdown-converter/" class="product-card">
+                    <div>
+                        <h3 class="card-title">Markdown Converter</h3>
+                        <p class="card-desc">Convert formatted text to Markdown — useful for pasting into Microsoft Copilot.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="pill-cta">Open tool <span aria-hidden="true">→</span></span>
+                        <span class="path-label">/markdown-converter</span>
+                    </div>
                 </a>
             </section>
 
             <section class="lang-col" lang="fr-CA" aria-labelledby="heading-fr">
-                <h2 class="col-heading" id="heading-fr">Français</h2>
+                <h2 class="lang-label" id="heading-fr">
+                    <span>Français</span>
+                    <span class="lang-code">FR</span>
+                </h2>
 
-                <a href="https://ifptrd.github.io/newslinks/index_fr.html" class="tool-link">
-                    <span class="tool-title">
-                        <span>Liens de nouvelles</span>
-                        <span class="arrow" aria-hidden="true">→</span>
-                    </span>
-                    <span class="tool-desc">Nouvelles sur la santé au Canada et communiqués officiels des provinces et territoires.</span>
+                <a href="https://ifptrd.github.io/newslinks/index_fr.html" class="product-card">
+                    <div>
+                        <h3 class="card-title">Liens de nouvelles</h3>
+                        <p class="card-desc">Nouvelles sur la santé au Canada et communiqués officiels des provinces et territoires.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="pill-cta">Ouvrir l’outil <span aria-hidden="true">→</span></span>
+                        <span class="path-label">/newslinks/index_fr.html</span>
+                    </div>
                 </a>
 
-                <a href="https://ifptrd.github.io/timezones/?lang=fr" class="tool-link">
-                    <span class="tool-title">
-                        <span>Fuseaux horaires canadiens</span>
-                        <span class="arrow" aria-hidden="true">→</span>
-                    </span>
-                    <span class="tool-desc">Comparez l’heure locale des capitales provinciales et territoriales.</span>
+                <a href="https://ifptrd.github.io/timezones/?lang=fr" class="product-card">
+                    <div>
+                        <h3 class="card-title">Fuseaux horaires canadiens</h3>
+                        <p class="card-desc">Comparez l’heure locale des capitales provinciales et territoriales.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="pill-cta">Ouvrir l’outil <span aria-hidden="true">→</span></span>
+                        <span class="path-label">/timezones/?lang=fr</span>
+                    </div>
                 </a>
 
-                <a href="https://ifptrd.github.io/markdown-converter/#instructions-fr" class="tool-link">
-                    <span class="tool-title">
-                        <span>Convertisseur Markdown</span>
-                        <span class="arrow" aria-hidden="true">→</span>
-                    </span>
-                    <span class="tool-desc">Convertissez du texte formaté en Markdown — pratique pour coller dans Microsoft Copilot.</span>
+                <a href="https://ifptrd.github.io/markdown-converter/#instructions-fr" class="product-card">
+                    <div>
+                        <h3 class="card-title">Convertisseur Markdown</h3>
+                        <p class="card-desc">Convertissez du texte formaté en Markdown — pratique pour coller dans Microsoft Copilot.</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="pill-cta">Ouvrir l’outil <span aria-hidden="true">→</span></span>
+                        <span class="path-label">/markdown-converter</span>
+                    </div>
                 </a>
             </section>
         </div>
