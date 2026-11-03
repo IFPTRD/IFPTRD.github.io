@@ -1,24 +1,26 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Refract · Copilot Agent Setup</title><style>body{margin:0;background:#f4f7f9;color:#183342;font:16px/1.65 system-ui,sans-serif}main{max-width:850px;margin:auto;padding:40px 22px}header{background:#193a4d;color:#fff;padding:18px 25px}header a{color:#d9f3f1}h1{margin:.2em 0}h2{margin-top:30px}section{background:#fff;border:1px solid #d9e2e7;border-radius:12px;padding:24px;margin:18px 0}a{color:#126b72}code{background:#edf4f5;padding:2px 5px;border-radius:4px}.note{border-left:4px solid #bb7b26;padding:12px 16px;background:#fff8e8}li{margin:8px 0}</style></head><body><header><a href="./">← Refract</a></header><main><h1>Set up the Refract Copilot skill</h1><section><h2>Download the Refract skill</h2><p><a href="Refract_M365_Copilot_Skill_v2.zip" download style="display:inline-block;background:#126b72;color:#fff;text-decoration:none;padding:11px 17px;border-radius:8px;font-weight:700">Download Refract Skill v2 (.zip)</a></p><p>Upload this ZIP directly under <strong>Configure → Skills → Add</strong> in Microsoft 365 Copilot Agent Builder. Do not extract it.</p></section>
-<p>Refract uses a reusable skill to convert your own documents into structured JSON. The skill contains its schema, examples and a format validator; no other project's content is included.</p>
-<section><h2>1. Install the updated skill</h2><ol>
-<li><a href="Refract_M365_Copilot_Skill_v2.zip" download>Download the Refract skill ZIP</a> directly from this page. Keep the ZIP intact.</li>
-<li>In Microsoft 365 Copilot Agent Builder, open your Refract agent. If the earlier Refract skill is installed, remove or replace that version first so the instructions do not conflict.</li><li>Go to <strong>Configure → Skills → Add</strong>.</li>
-<li>Upload the <strong>v2 ZIP</strong>, with <code>SKILL.md</code> inside it. Confirm the <strong>refract-guide-authoring</strong> skill appears.</li>
-<li>Replace your old Instructions text with the short <a href="copilot-agent-instructions.txt">skill-based agent instructions</a>. Remove the previous long prompt and starter-message material.</li>
-<li>Save the agent. No example JSON web-search source is required.</li>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Refract · Copilot Agent Setup</title><style>body{margin:0;background:#f4f7f9;color:#183342;font:16px/1.65 system-ui,sans-serif}main{max-width:850px;margin:auto;padding:40px 22px}header{background:#193a4d;color:#fff;padding:18px 25px}header a{color:#d9f3f1}h1{margin:.2em 0}h2{margin-top:30px}section{background:#fff;border:1px solid #d9e2e7;border-radius:12px;padding:24px;margin:18px 0}a{color:#126b72}code{background:#edf4f5;padding:2px 5px;border-radius:4px}.note{border-left:4px solid #bb7b26;padding:12px 16px;background:#fff8e8}li{margin:8px 0}</style></head><body><header><a href="./">← Refract</a></header><main>
+<h1>Refract — Microsoft 365 Copilot HTML Generator</h1>
+<p>Convert authorized source documents into a complete, interactive <strong>HTML guide</strong> that can be edited later in Refract Studio. The generator uses the same fixed design template as Refract. It does not require copying JSON into the builder.</p>
+<section><h2>Download the HTML generator skill</h2>
+<p><a href="Refract_M365_Copilot_HTML_Generator_v4.zip" download style="display:inline-block;background:#126b72;color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">Download Refract HTML Generator v4 (.zip)</a></p>
+<p>The ZIP contains <code>SKILL.md</code>, the shared HTML template, a schema, generic example, JSON validator, and offline Python renderer. No source documents from other projects are included.</p></section>
+<section><h2>1. Configure the agent</h2><ol>
+<li>Open your existing agent in Microsoft 365 Copilot Agent Builder under <strong>Configure</strong>.</li>
+<li>Under <strong>Skills</strong>, remove or replace the previous Refract skill. Upload the new <strong>v4 ZIP</strong> intact using <strong>Add</strong>.</li>
+<li>Replace all earlier agent Instructions with the <a href="copilot-agent-instructions.txt">latest Refract agent instructions</a>. Do not place sample prompts in the Instructions field.</li>
+<li>Save the agent and open <strong>Try it</strong> in a fresh conversation. Make sure its document access and Code Interpreter/file generation capabilities are available in your tenant.</li>
 </ol></section>
-<section><h2>2. Generate a guide</h2><ol>
-<li>Open the agent's <strong>Try it</strong> conversation; attach a short, appropriately classified DOCX or select a file accessible to the agent.</li>
-<li>Send: <em>Use the Refract guide-authoring skill to turn the attached document into a concise guide. Return one complete valid Refract JSON object in a single fenced json code block, with no commentary.</em></li>
-<li>Download the produced JSON if supported, or copy the raw JSON without Markdown fences.</li>
-<li>Open <a href="./">Refract</a>, import or paste JSON, choose <strong>Validate &amp; Preview</strong>, and review the output before exporting HTML.</li>
+<section><h2>2. Create a guide</h2><ol>
+<li>Attach or select the document(s) within your approved Microsoft 365 environment.</li>
+<li>Send: <em>Using the Refract skill, turn these documents into a standalone, downloadable HTML guide. Use the packaged renderer and make the result editable in Refract Studio.</em></li>
+<li>Download the generated <code>.html</code> file from the Copilot conversation and inspect it in a browser.</li>
+<li>To revise: open <a href="./">Refract Studio</a>, choose <strong>Import HTML</strong>, edit pages or sections, and export the revised HTML.</li>
 </ol></section>
 <section><h2>3. Troubleshooting</h2>
-<p>If the agent repeats “Attach or select the source documents,” the previous Instructions are probably still active. Replace them with the <a href="copilot-agent-instructions.txt">short skill-based instructions</a>, and test in <strong>Try it</strong> (not in the Configure description field).</p>
-<p>If it cannot read a DOCX, first ask the agent to summarize one sentence from that file. That helps distinguish attachment-access problems from JSON-generation problems.</p>
-<p>If Refract reports invalid JSON, paste the entire fenced json code block into Refract; it now removes the fencing and repairs common formatting and structural mistakes. If needed, have the agent run its bundled <code>scripts/validate_refract.py</code> when script execution is available. Refract also checks that blocks use the correct shapes (e.g., checks contain title/detail objects and notes use a label field).</p>
+<p>If Copilot creates only JSON or narrates a plan, check that the old instructions were replaced, that the v4 skill is selected, and that Code Interpreter is available. The renderer must be executed with the packaged template; Copilot should not independently write HTML/CSS/JavaScript.</p>
+<p>If the skill reports a validation error, ask the agent to repair its intermediate Refract JSON and rerun <code>scripts/render_refract.py</code>. If your tenant cannot produce downloadable HTML, the skill explicitly falls back to Refract JSON rather than claiming successful file generation.</p>
+<p>If a guide does not import as editable, verify it was generated by Refract and still contains <code>script#guide-data</code>. Refract Studio can convert other HTML approximately, but exact editing requires embedded guide data.</p>
 </section>
-<section><h2>4. Review and distribution</h2>
-<p class="note"><strong>Information handling:</strong> Refract's builder runs in the browser and does not upload user JSON to GitHub. The GitHub Pages code is public, however. Handle source documents and exported guides only through authorized organizational channels, with factual review and approvals before distribution.</p>
-</section>
-<p><a href="./">Return to Refract</a></p></main></body></html>
+<section><h2>4. Information handling</h2>
+<p class="note"><strong>Keep source documents and generated guides in approved channels.</strong> The Refract software and skill ZIP are public on GitHub Pages. The agent should process your documents in the approved Microsoft 365 environment; do not upload generated guides containing restricted material to a public repository. Check all substantive content and links before distribution.</p>
+</section><p><a href="./">Return to Refract Studio</a></p></main></body></html>
