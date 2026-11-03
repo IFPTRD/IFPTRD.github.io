@@ -1,106 +1,378 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFPTRD - Welcome</title>
+    <meta name="description" content="IFPTRD experimental, unclassified productivity tools / Outils de productivité expérimentaux et non classifiés d’IFPTRD.">
+    <title>IFPTRD — Tools / Outils</title>
     <style>
+        :root {
+            --bg-start: #0f172a;
+            --bg-end: #1e293b;
+            --card-bg: rgba(30, 41, 59, 0.78);
+            --card-border: rgba(148, 163, 184, 0.22);
+            --card-hover-border: rgba(56, 189, 248, 0.5);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --text-subtle: #94a3b8;
+            --accent: #38bdf8;
+            --btn-en-start: #3b82f6;
+            --btn-en-end: #2563eb;
+            --btn-fr-bg: rgba(51, 65, 85, 0.85);
+            --btn-fr-border: rgba(148, 163, 184, 0.38);
+            --btn-fr-hover: rgba(71, 85, 105, 0.95);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: radial-gradient(circle at top, #1e293b 0%, #0f172a 70%);
             min-height: 100vh;
+            color: var(--text-main);
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #fff;
+            padding: 3rem 1.25rem;
+            line-height: 1.5;
         }
-        
+
         .container {
+            width: 100%;
+            max-width: 1060px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        header {
             text-align: center;
-            padding: 2rem;
-            max-width: 800px;
-            animation: fadeIn 1s ease-in;
+            margin-bottom: 2.75rem;
         }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: #b8c1ec;
-            margin-bottom: 3rem;
-            opacity: 0.9;
-        }
-        
-        .btn {
+
+        .eyebrow {
             display: inline-block;
-            background: linear-gradient(90deg, #4361ee, #3a0ca3);
-            color: white;
-            padding: 0.8rem 2rem;
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: 500;
-            text-decoration: none;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.35);
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.45);
-        }
-        
-        .logo {
-            font-size: 1.5rem;
+            font-size: 0.85rem;
             font-weight: 700;
-            margin-bottom: 2rem;
-            letter-spacing: 2px;
-            color: #4cc9f0;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 0.35rem 0.9rem;
+            border-radius: 999px;
+            margin-bottom: 1.1rem;
         }
-        
+
+        h1 {
+            font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.4rem;
+        }
+
+        .title-fr {
+            display: block;
+            font-size: clamp(1.25rem, 2.4vw, 1.65rem);
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .subtitle-group {
+            margin-top: 1rem;
+            color: var(--text-subtle);
+            font-size: 1.02rem;
+        }
+
+        .subtitle-group p + p {
+            margin-top: 0.2rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            align-items: stretch;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.6rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--card-hover-border);
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+        }
+
+        .lang-section {
+            padding-bottom: 1rem;
+        }
+
+        .lang-section + .lang-section {
+            padding-top: 1rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.16);
+        }
+
+        .lang-header {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .lang-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.5rem;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .lang-badge.en {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+        .lang-badge.fr {
+            background: rgba(56, 189, 248, 0.16);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+
+        .tool-card h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .tool-desc {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+
+        .card-actions {
+            margin-top: 1.1rem;
+            padding-top: 1.1rem;
+            border-top: 1px solid rgba(148, 163, 184, 0.2);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .btn-en {
+            background: linear-gradient(135deg, var(--btn-en-start), var(--btn-en-end));
+            color: #ffffff;
+            border: 1px solid rgba(96, 165, 250, 0.4);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-en:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+        }
+
+        .btn-fr {
+            background: var(--btn-fr-bg);
+            color: var(--text-main);
+            border: 1px solid var(--btn-fr-border);
+        }
+
+        .btn-fr:hover {
+            background: var(--btn-fr-hover);
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .btn-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.1rem 0.38rem;
+            border-radius: 4px;
+            background: rgba(15, 23, 42, 0.35);
+            letter-spacing: 0.04em;
+        }
+
+        footer {
+            margin-top: 2.75rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-subtle);
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--text-subtle);
+        }
+
+        footer a:hover {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .footer {
-            position: absolute;
-            bottom: 2rem;
-            font-size: 0.85rem;
-            opacity: 0.7;
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
+
+        @media (max-width: 640px) {
+            body {
+                padding: 2rem 1rem;
             }
-            .subtitle {
-                font-size: 1rem;
+            .card-actions {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <main class="container">
+        <header>
+            <span class="eyebrow">IFPTRD</span>
+            <h1>
+                Welcome to the IFPTRD GitHub Page
+                <span class="title-fr" lang="fr-CA">Bienvenue sur la page GitHub d’IFPTRD</span>
+            </h1>
+            <div class="subtitle-group">
+                <p>Home to our experimental, unclassified productivity tools</p>
+                <p lang="fr-CA">Outils de productivité expérimentaux et non classifiés</p>
+            </div>
+        </header>
 
-        <h1>Welcome to the IFPTRD Github Page</h1>
-        <p class="subtitle">Home to our experimental, unclassified productivity tools</p>
-        <a href="https://ifptrd.github.io/newslinks" class="btn">News Links</a>
-        <a href="https://ifptrd.github.io/newslinks/index_fr.html" class="btn">Liens de nouvelles</a>
-        <a href="https://ifptrd.github.io/markdown-converter/" class="btn">Markdown Converter</a>
-    </div>
+        <div class="tools-grid">
+            <!-- News Links / Liens de nouvelles -->
+            <article class="tool-card" aria-label="News Links / Liens de nouvelles">
+                <div>
+                    <div class="lang-section">
+                        <div class="lang-header">
+                            <span class="lang-badge en">EN</span>
+                            <h2>News Links</h2>
+                        </div>
+                        <p class="tool-desc">Canadian health news and official provincial and territorial announcements.</p>
+                    </div>
+                    <div class="lang-section" lang="fr-CA">
+                        <div class="lang-header">
+                            <span class="lang-badge fr">FR</span>
+                            <h2>Liens de nouvelles</h2>
+                        </div>
+                        <p class="tool-desc">Nouvelles sur la santé au Canada et communiqués officiels des provinces et territoires.</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <a href="https://ifptrd.github.io/newslinks/" class="btn btn-en" aria-label="Open News Links in English">
+                        <span class="btn-tag">EN</span>
+                        <span>English</span>
+                    </a>
+                    <a href="https://ifptrd.github.io/newslinks/index_fr.html" class="btn btn-fr" lang="fr-CA" aria-label="Ouvrir Liens de nouvelles en français">
+                        <span class="btn-tag">FR</span>
+                        <span>Français</span>
+                    </a>
+                </div>
+            </article>
 
+            <!-- Time Zones / Fuseaux horaires -->
+            <article class="tool-card" aria-label="Canadian Time Zones / Fuseaux horaires canadiens">
+                <div>
+                    <div class="lang-section">
+                        <div class="lang-header">
+                            <span class="lang-badge en">EN</span>
+                            <h2>Canadian Time Zones</h2>
+                        </div>
+                        <p class="tool-desc">Ottawa-centred meeting planner across provincial and territorial capitals with DST comparisons.</p>
+                    </div>
+                    <div class="lang-section" lang="fr-CA">
+                        <div class="lang-header">
+                            <span class="lang-badge fr">FR</span>
+                            <h2>Fuseaux horaires canadiens</h2>
+                        </div>
+                        <p class="tool-desc">Planificateur de réunion centré sur Ottawa pour les capitales provinciales et territoriales.</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <a href="https://ifptrd.github.io/timezones/" class="btn btn-en" aria-label="Open Canadian Time Zones in English">
+                        <span class="btn-tag">EN</span>
+                        <span>English</span>
+                    </a>
+                    <a href="https://ifptrd.github.io/timezones/?lang=fr" class="btn btn-fr" lang="fr-CA" aria-label="Ouvrir Fuseaux horaires canadiens en français">
+                        <span class="btn-tag">FR</span>
+                        <span>Français</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Markdown Converter / Convertisseur Markdown -->
+            <article class="tool-card" aria-label="Markdown Converter / Convertisseur Markdown">
+                <div>
+                    <div class="lang-section">
+                        <div class="lang-header">
+                            <span class="lang-badge en">EN</span>
+                            <h2>Markdown Converter</h2>
+                        </div>
+                        <p class="tool-desc">Paste formatted clipboard text and convert it into clean Markdown locally in your browser.</p>
+                    </div>
+                    <div class="lang-section" lang="fr-CA">
+                        <div class="lang-header">
+                            <span class="lang-badge fr">FR</span>
+                            <h2>Convertisseur Markdown</h2>
+                        </div>
+                        <p class="tool-desc">Collez du texte enrichi depuis le presse-papiers pour le convertir en Markdown dans le navigateur.</p>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <a href="https://ifptrd.github.io/markdown-converter/" class="btn btn-en" aria-label="Open Markdown Converter (English instructions)">
+                        <span class="btn-tag">EN</span>
+                        <span>English</span>
+                    </a>
+                    <a href="https://ifptrd.github.io/markdown-converter/#instructions-fr" class="btn btn-fr" lang="fr-CA" aria-label="Ouvrir Convertisseur Markdown (instructions en français)">
+                        <span class="btn-tag">FR</span>
+                        <span>Français</span>
+                    </a>
+                </div>
+            </article>
+        </div>
+
+        <footer>
+            <p><a href="https://github.com/IFPTRD">github.com/IFPTRD</a></p>
+        </footer>
+    </main>
 </body>
 </html>
