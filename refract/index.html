@@ -221,6 +221,11 @@ $('jsonFileImport').addEventListener('change',async e=>{const f=e.target.files?.
 
 /* Refract visual content editor. Editing mutates only local JSON; preview and export use the same data. */
 const visualState={data:null,page:0,block:0,mode:'visual'};
+let pendingRefresh=null;
+function focusInspector(){const el=$('editDetails');if(el)el.open=true;const panel=document.querySelector('.studio-inspector');if(panel)panel.scrollTop=0}
+function previewSelect(pageId,blockIndex){const iframe=$('frame');if(iframe.contentWindow)iframe.contentWindow.postMessage({source:'refract-studio',type:'select',pageId,blockIndex},'*')}
+function pickPage(index){if(!visualState.data?.pages?.[index])return;visualState.page=index;visualState.block=0;renderVisual();previewSelect(visualState.data.pages[index].id,null)}
+function pickBlock(index){const p=visualState.data?.pages?.[visualState.page];if(!p?.blocks?.[index])return;visualState.block=index;renderVisual();focusInspector();previewSelect(p.id,index)}
 const visualTypes=['paragraph','hero','note','bullets','checks','cards','steps','table','resources','glossary'];
 const vEl=(tag,cls,content)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(content!==undefined)e.textContent=content;return e};
 const vButton=(label,fn,tooltip)=>{const b=vEl('button','visual-btn',label);b.type='button';if(tooltip)b.title=tooltip;b.addEventListener('click',fn);return b};
@@ -235,7 +240,7 @@ function switchEditor(mode){
 function syncVisual(refresh=true){
  if(!visualState.data)return;
  field.value=JSON.stringify(visualState.data,null,2);
- if(refresh)$('previewBtn').click();
+ if(pendingRefresh)clearTimeout(pendingRefresh);if(refresh)$('previewBtn').click();else pendingRefresh=setTimeout(()=>$('previewBtn').click(),480);
 }
 function swapVisual(items,from,to,type){
  if(to<0||to>=items.length||from===to)return;
@@ -266,13 +271,16 @@ function newVisualBlock(type){
  }}
 function renderVisual(){
  const d=visualState.data;if(!d||!d.pages?.length)return;
+ $('pagesCount').textContent=d.pages.length;
+ const activePage=d.pages[Math.min(visualState.page,d.pages.length-1)];$('sectionsCount').textContent=(activePage.blocks||[]).length;
+ $('inspectorContext').textContent=activePage.title+(activePage.blocks?.[visualState.block]?' · '+(activePage.blocks[visualState.block].title||activePage.blocks[visualState.block].label||activePage.blocks[visualState.block].type):'');
  const meta=$('visualMetaFields');meta.replaceChildren(vEl('h3','','Guide details'));
  for(const key of ['title','subtitle','audience']){const label=vEl('label','editor-field',key[0].toUpperCase()+key.slice(1)),inp=vEl('input');inp.value=(d.meta||{})[key]||'';inp.addEventListener('input',()=>{d.meta=d.meta||{};d.meta[key]=inp.value;syncVisual(false)});inp.addEventListener('change',()=>{syncVisual()});label.append(inp);meta.append(label)}
  const pages=$('visualPages');pages.replaceChildren();
  d.pages.forEach((p,i)=>{
   const line=vEl('div','visual-page'+(i===visualState.page?' selected':''));makeSortable(line,d.pages,i,'page');
   line.append(vEl('span','visual-handle','⠿'));
-  const name=vEl('button','visual-name',p.title||'Untitled page');name.type='button';name.addEventListener('click',()=>{visualState.page=i;visualState.block=0;renderVisual()});line.append(name);
+  const name=vEl('button','visual-name',p.title||'Untitled page');name.type='button';name.addEventListener('click',()=>pickPage(i));line.append(name);
   line.append(vButton('↑',()=>swapVisual(d.pages,i,i-1,'page'),'Move page earlier'));
   line.append(vButton('↓',()=>swapVisual(d.pages,i,i+1,'page'),'Move page later'));
   pages.append(line);
@@ -284,7 +292,7 @@ function renderVisual(){
  const wrap=$('visualBlocks');wrap.replaceChildren();
  blocks.forEach((b,i)=>{
   const row=vEl('div','visual-block'+(i===visualState.block?' selected':''));makeSortable(row,blocks,i,'block');row.append(vEl('span','visual-handle','⠿'));
-  const name=vEl('button','visual-name',((b.type||'section')+': '+(b.title||b.label||'')));name.type='button';name.addEventListener('click',()=>{visualState.block=i;renderVisual()});row.append(name);
+  const name=vEl('button','visual-name',((b.type||'section')+': '+(b.title||b.label||'')));name.type='button';name.addEventListener('click',()=>pickBlock(i));row.append(name);
   row.append(vButton('↑',()=>swapVisual(blocks,i,i-1,'block'),'Move section up'));
   row.append(vButton('↓',()=>swapVisual(blocks,i,i+1,'block'),'Move section down'));
   const rem=vButton('×',()=>{if(!confirm('Remove this section?'))return;blocks.splice(i,1);visualState.block=Math.max(0,Math.min(visualState.block,blocks.length-1));syncVisual();renderVisual()},'Delete section');rem.classList.add('danger');row.append(rem);wrap.append(row);
@@ -331,6 +339,33 @@ $('addPageBtn').addEventListener('click',()=>{const d=visualState.data;if(!d)ret
 $('addBlockBtn').addEventListener('click',()=>{const d=visualState.data;if(!d)return;const blocks=d.pages[visualState.page].blocks;blocks.push(newVisualBlock($('newBlockType').value));visualState.block=blocks.length-1;syncVisual();renderVisual()});
 const originalSample=$('sampleBtn').onclick;
 $('sampleBtn').onclick=()=>{originalSample();if(visualState.mode==='visual')switchEditor('visual')};
+
+function closeStructure(){const x=$('studioSidebar');x.classList.remove('is-open');$('sidebarToggle').setAttribute('aria-expanded','false')}
+$('sidebarToggle').addEventListener('click',()=>{const rail=$('studioSidebar');const open=rail.classList.toggle('is-open');$('sidebarToggle').setAttribute('aria-expanded',String(open))});
+$('closeSidebar').addEventListener('click',closeStructure);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeStructure()});
+window.addEventListener('message',e=>{
+ if(e.source!==$('frame').contentWindow||!e.data||e.data.source!=='refract-preview')return;
+ const msg=e.data,d=visualState.data;
+ if(!d||!Array.isArray(d.pages))return;
+ const at=d.pages.findIndex(p=>p.id===msg.pageId);
+ if(at<0)return;
+ const pageChanged=visualState.page!==at;
+ visualState.page=at;
+ if(msg.type==='block'&&Number.isInteger(msg.blockIndex)&&d.pages[at].blocks?.[msg.blockIndex]){
+  visualState.block=msg.blockIndex;
+  $('editDetails').open=true;closeStructure();
+  if(visualState.mode!=='visual')switchEditor('visual');
+  renderVisual();focusInspector();
+ }else if(msg.type==='page'&&pageChanged){
+  visualState.block=0;
+  if(visualState.mode==='visual')renderVisual();
+ }
+});
+$('frame').addEventListener('load',()=>{
+ const p=visualState.data?.pages?.[visualState.page];
+ if(p)previewSelect(p.id,Number.isInteger(visualState.block)?visualState.block:null)
+});
 switchEditor('visual');
 
 </script></body></html>
