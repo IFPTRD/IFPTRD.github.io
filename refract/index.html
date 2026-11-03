@@ -224,8 +224,8 @@ const visualState={data:null,page:0,block:0,mode:'visual'};
 let pendingRefresh=null;
 function focusInspector(){const el=$('editDetails');if(el)el.open=true;const panel=document.querySelector('.studio-inspector');if(panel)panel.scrollTop=0}
 function previewSelect(pageId,blockIndex){const iframe=$('frame');if(iframe.contentWindow)iframe.contentWindow.postMessage({source:'refract-studio',type:'select',pageId,blockIndex},'*')}
-function pickPage(index){if(!visualState.data?.pages?.[index])return;visualState.page=index;visualState.block=0;renderVisual();previewSelect(visualState.data.pages[index].id,null)}
-function pickBlock(index){const p=visualState.data?.pages?.[visualState.page];if(!p?.blocks?.[index])return;visualState.block=index;renderVisual();focusInspector();previewSelect(p.id,index)}
+function pickPage(index){if(!visualState.data?.pages?.[index])return;visualState.page=index;visualState.block=0;$('pageDetails').open=true;$('editDetails').open=false;renderVisual();previewSelect(visualState.data.pages[index].id,null)}
+function pickBlock(index){const p=visualState.data?.pages?.[visualState.page];if(!p?.blocks?.[index])return;visualState.block=index;$('pageDetails').open=false;renderVisual();focusInspector();previewSelect(p.id,index)}
 const visualTypes=['paragraph','hero','note','bullets','checks','cards','steps','table','resources','glossary'];
 const vEl=(tag,cls,content)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(content!==undefined)e.textContent=content;return e};
 const vButton=(label,fn,tooltip)=>{const b=vEl('button','visual-btn',label);b.type='button';if(tooltip)b.title=tooltip;b.addEventListener('click',fn);return b};
@@ -287,7 +287,16 @@ function renderVisual(){
  });
  const page=d.pages[visualState.page],blocks=page.blocks||[];
  const props=$('visualPageFields');props.replaceChildren(vEl('h3','','Edit page'));
- for(const key of ['title','intro','id']){const l=vEl('label','editor-field',key==='id'?'Page ID (used for links)':key[0].toUpperCase()+key.slice(1));const fieldInput=vEl(key==='intro'?'textarea':'input');fieldInput.value=page[key]||'';fieldInput.addEventListener('input',()=>{page[key]=fieldInput.value;syncVisual(false)});fieldInput.addEventListener('change',()=>{syncVisual();renderVisual()});l.append(fieldInput);props.append(l)}
+ for(const key of ['title','intro','id']){const l=vEl('label','editor-field',key==='id'?'Page ID (used for links)':key[0].toUpperCase()+key.slice(1));const fieldInput=vEl(key==='intro'?'textarea':'input');fieldInput.value=page[key]||'';if(key==='id')fieldInput.dataset.originalId=page[key]||'';fieldInput.addEventListener('input',()=>{page[key]=fieldInput.value;syncVisual(false)});fieldInput.addEventListener('change',()=>{
+  if(key==='id'){
+   const newId=page.id,oldId=fieldInput.dataset.originalId||'';
+   if(oldId&&newId!==oldId){
+    d.pages.forEach(other=>{if(other.parent===oldId)other.parent=newId;(other.blocks||[]).forEach(b=>{if(b.type==='cards')for(const item of b.items||[])if(item.link===oldId)item.link=newId})});
+   }
+   fieldInput.dataset.originalId=newId;
+  }
+  syncVisual();renderVisual()
+ });l.append(fieldInput);props.append(l)}
  const deletePage=vButton('Delete page',()=>{if(d.pages.length===1){feedback('A guide needs at least one page.',true);return}if(!confirm('Delete this page and all its sections?'))return;d.pages.splice(visualState.page,1);visualState.page=Math.max(0,visualState.page-1);visualState.block=0;syncVisual();renderVisual()},'Delete the selected page');deletePage.classList.add('danger');props.append(deletePage);
  const wrap=$('visualBlocks');wrap.replaceChildren();
  blocks.forEach((b,i)=>{
@@ -335,7 +344,7 @@ function renderObjectFields(container,target){
 }
 $('visualModeBtn').addEventListener('click',()=>switchEditor('visual'));
 $('jsonModeBtn').addEventListener('click',()=>{syncVisual(false);switchEditor('json')});
-$('addPageBtn').addEventListener('click',()=>{const d=visualState.data;if(!d)return;const id='new-page-'+(d.pages.length+1);d.pages.push({id,title:'New Page',intro:'',blocks:[]});visualState.page=d.pages.length-1;visualState.block=0;syncVisual();renderVisual()});
+$('addPageBtn').addEventListener('click',()=>{const d=visualState.data;if(!d)return;let n=d.pages.length+1,id='new-page-'+n;while(d.pages.some(p=>p.id===id))id='new-page-'+(++n);d.pages.push({id,title:'New Page',intro:'',blocks:[]});visualState.page=d.pages.length-1;visualState.block=0;syncVisual();renderVisual()});
 $('addBlockBtn').addEventListener('click',()=>{const d=visualState.data;if(!d)return;const blocks=d.pages[visualState.page].blocks;blocks.push(newVisualBlock($('newBlockType').value));visualState.block=blocks.length-1;syncVisual();renderVisual()});
 const originalSample=$('sampleBtn').onclick;
 $('sampleBtn').onclick=()=>{originalSample();if(visualState.mode==='visual')switchEditor('visual')};
@@ -353,12 +362,14 @@ window.addEventListener('message',e=>{
  const pageChanged=visualState.page!==at;
  visualState.page=at;
  if(msg.type==='block'&&Number.isInteger(msg.blockIndex)&&d.pages[at].blocks?.[msg.blockIndex]){
-  visualState.block=msg.blockIndex;
-  $('editDetails').open=true;closeStructure();
   if(visualState.mode!=='visual')switchEditor('visual');
+  const updated=visualState.data?.pages.findIndex(p=>p.id===msg.pageId);
+  if(updated>=0)visualState.page=updated;
+  visualState.block=msg.blockIndex;
+  $('pageDetails').open=false;$('editDetails').open=true;closeStructure();
   renderVisual();focusInspector();
  }else if(msg.type==='page'&&pageChanged){
-  visualState.block=0;
+  visualState.block=0;$('pageDetails').open=true;$('editDetails').open=false;
   if(visualState.mode==='visual')renderVisual();
  }
 });
