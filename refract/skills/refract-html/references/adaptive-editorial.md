@@ -23,7 +23,7 @@ A source has nine repetitive paragraphs describing how different staff submit a 
 
 A source contains long narrative explaining the history of a subject, with no operational procedure. Create a clear conceptual guide. **Do not invent steps, owners, escalation routes or checklists to make it resemble a playbook.**
 
-A source contains complex technical drawings or screenshot-based instructions. Summarize supported aspects but do not claim those visuals were preserved or reconstructed. If visually exact material is essential, retain it as an external approved asset during editorial review.
+A source contains complex technical drawings or screenshot-based instructions. Summarize supported aspects but do not claim those visuals were preserved or reconstructed. If a specific original visual is essential, extract/crop that visual and its relevant legend/caption for an image block. Do not use full PDF-page images, scanned prose or a page gallery as a conversion fallback.
 
 ## Information design principles
 
@@ -41,4 +41,6 @@ Do not automatically create an `Interventions`, `Handling difficult exchanges`, 
 
 ## Full-document coverage
 
-For large binders, preserve the complete set of issue briefings, agenda items, background facts, options, decisions, supporting material and annexes. The guide may be longer than a conventional reference tool. Replace duplicated or cumbersome formatting, **not the source's substantive content**. Create an internal coverage inventory and map each substantive source unit to guide pages; see `source-coverage.md`. An e-binder is not a summary unless the user specifically requests one.
+For large binders, preserve the complete set of issue briefings, agenda items, background facts, options, decisions, supporting material and annexes. The guide may be longer than a conventional reference tool. Actively rewrite cumbersome prose, integrate related information and remove repetitive expression while retaining substantive meaning and all necessary distinctions. Do not paste text unchanged or reproduce PDF pages as images. Create an internal coverage inventory and map each substantive source unit to guide pages; see `source-coverage.md`. An e-binder is not a summary unless the user specifically requests one.
+
+Use the worked example and review questions in `transformation.md` to distinguish faithful information design from transcription. Page count and copying ratios are not quality measures.

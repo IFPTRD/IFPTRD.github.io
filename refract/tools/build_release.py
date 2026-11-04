@@ -13,7 +13,7 @@ import zipfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 PACKAGE=ROOT/'skills/refract-html'
-VERSION='6.3'
+VERSION='6.4'
 FILES=['SKILL.md']+[str(p.relative_to(PACKAGE)) for folder in ('references','scripts') for p in sorted((PACKAGE/folder).glob('*')) if p.is_file() and p.suffix in ('.md','.json','.html','.py')]
 
 def outputs():

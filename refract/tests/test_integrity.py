@@ -99,6 +99,18 @@ class Integrity(unittest.TestCase):
             (td/'guide.json').write_text(json.dumps(d));(td/'inventory.json').write_text(json.dumps(inventory()))
             result=subprocess.run([sys.executable,str(PKG/'scripts/render_refract.py'),str(td/'guide.json'),'--inventory',str(td/'inventory.json'),'--output',str(td/'guide.html')],capture_output=True)
             self.assertNotEqual(result.returncode,0);self.assertFalse((td/'guide.html').exists())
+    def test_page_images_cannot_cover_source_prose(self):
+        d=guide();i=inventory();u=i['units'][0]
+        u['target_blocks']=[{'page_id':'capacity','block_id':'chart'}];u['required_text']=[]
+        self.assertTrue(any('editable' in e for e in check_coverage(i,d,True)))
+        # Even with a text mapping, a source sentence hidden in alt text does not count.
+        u['target_blocks'].append({'page_id':'capacity','block_id':'requirements'})
+        u['required_text']=['Original source phrase']
+        d['pages'][1]['blocks'][2]['alt']='Original source phrase'
+        self.assertTrue(check_coverage(i,d,True))
+    def test_genuine_visual_unit_can_map_to_image(self):
+        i=inventory();u=i['units'][0];u.update(kind='figure',required_text=[],target_blocks=[{'page_id':'capacity','block_id':'chart'}])
+        self.assertEqual(check_coverage(i,guide(),True),[])
     def test_release_sync(self):
         subprocess.run([sys.executable,str(ROOT/'tools/build_release.py'),'--check'],check=True,capture_output=True)
 

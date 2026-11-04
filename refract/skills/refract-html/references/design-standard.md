@@ -19,3 +19,7 @@
 - The authoring agent must use the bundled template; it must not invent arbitrary theme CSS or colour attributes in the JSON. Verify generated HTML if browser or CSS inspection is available.
 
 Dense guides use collapsible navigation groups and a compact mobile contents button. Keep primary content expanded; within-page contents aid longer pages. Search should open the matching section with a relevant excerpt. Check print with long tables, footnotes and images as well as short examples.
+
+## Editorial quality and images
+
+A full-coverage text dump is not a successful conversion. Rework dense writing into a clear reading path with specific headings and appropriate components; keep ordinary prose when it serves the material. Original image blocks are for specific meaningful visuals, cropped to the visual and its necessary caption/legend. Do not use full PDF-page screenshots, document thumbnails or images of prose/ordinary tables as substitutes for editable content. Do not duplicate source text and page facsimiles. Preserve precision and qualifications while improving expression; retain verbatim wording only where exact wording itself matters.

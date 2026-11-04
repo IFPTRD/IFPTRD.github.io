@@ -67,12 +67,16 @@ def check_coverage(inventory,guide,strict=False):
                 if not p:errors.append(loc+': unknown destination page '+str(pid));continue
                 if not p.get('blocks'):errors.append(loc+': destination page is empty')
                 selected.extend(p.get('blocks',[]))
+        visual_kind=u.get('kind') in ('figure','diagram','map','photograph','interface-screenshot','visual','image')
+        if selected and not visual_kind and not any(b.get('type')!='image' for b in selected if isinstance(b,dict)):
+            errors.append(loc+': textual source content must map to editable text/table blocks; an image cannot establish its coverage')
+        anchor_blocks=selected if visual_kind else [b for b in selected if isinstance(b,dict) and b.get('type')!='image']
         exact=u.get('required_text',[])
         if not isinstance(exact,list) or any(not isinstance(t,str) or not t.strip() for t in exact):errors.append(loc+': required_text must contain nonempty exact source passages');continue
         # Check each anchor within one block; do not join separate passages into false matches.
         for text in exact:
             needle=plain(text)
-            if not any(needle in plain(block) for block in selected):errors.append(loc+': missing or changed precision anchor '+repr(text))
+            if not any(needle in plain(block) for block in anchor_blocks):errors.append(loc+': missing or changed precision anchor '+repr(text))
     return errors
 
 
