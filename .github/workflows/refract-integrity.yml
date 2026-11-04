@@ -1,0 +1,17 @@
+name: Refract integrity
+on:
+  push:
+    paths: ['refract/**', '.github/workflows/refract-integrity.yml']
+  pull_request:
+    paths: ['refract/**', '.github/workflows/refract-integrity.yml']
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m unittest discover -s refract/tests -v
+      - run: python3 refract/tools/build_release.py --check
+      - run: node --check refract/renderer/viewer.js
+      - run: node --check refract/renderer/validate.js

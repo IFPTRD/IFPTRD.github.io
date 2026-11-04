@@ -1,26 +1,37 @@
-# Refract format v1
+# Refract structured content format — adaptive guides
 
-The intermediate JSON is never the primary user-facing deliverable. It is validated and rendered to standalone HTML using scripts/render_refract.py.
+The JSON is an internal interchange format used to generate a complete standalone HTML guide. It is not normally delivered to users.
 
-Root: `{"meta":{"title":"...","subtitle":"...","audience":"..."},"pages":[...],"glossary":[]}`.
+The root object is `{"meta":{"title":"...","subtitle":"...","audience":"..."},"pages":[...],"glossary":[]}`. Pages are ordered as intended in navigation and have unique `id` (lowercase words separated by hyphens), `title`, optional `intro`, optional `parent` referencing another page, and `blocks`.
 
-Pages have a unique kebab-case `id`, a `title`, an optional `intro`, an optional `parent` referring to an existing ID, and `blocks`. Their order determines sidebar and printed order. Each card link must reference an existing page id.
+| Block | Fields | Best used for |
+| --- | --- | --- |
+| hero | type, title, text, optional kicker | A meaningful opening, only if needed |
+| paragraph | type, title, text | Explanations and narrative |
+| note | type, label, text | Critical exception, constraint or qualification |
+| checks | type, title, items: [{title, detail}] | Real verification criteria or decision checks |
+| cards | type, title, items: [{title, text, link?}] | Brief, distinct concepts or navigation |
+| steps | type, title, items: [{title, text}] | A real ordered process or procedure |
+| bullets | type, title, items: [string] | Short related points |
+| table | type, title, columns: [string], rows: [[string]] | Comparisons and lookup data |
+| resources | type, title, items: [{title, url, note?}] | Genuine source-provided HTTP(S) links |
+| glossary | type, title, items: [{term, definition}] | Specialized terms |
+| governance | type, title, intro?, columns: [{title,text?,items:[{title,text?}]}], caption? | Grounded multi-actor or multi-level responsibilities |
+| timeline | type, title, items: [{period,title,text}] | Source-grounded chronology or staged sequence |
 
-Allowed block shapes:
+Top-level glossary is an array of `{term,definition}` objects. `[[TERM]]` in prose can expose hover definitions.
 
-- hero: `{"type":"hero","kicker":"...","title":"...","text":"..."}`
-- paragraph: `{"type":"paragraph","title":"...","text":"..."}`
-- note: `{"type":"note","label":"...","text":"..."}` (not title)
-- checks: `{"type":"checks","title":"...","items":[{"title":"...","detail":"..."}]}`
-- cards: `{"type":"cards","title":"...","items":[{"title":"...","text":"...","link":"existing-page-id"}]}`
-- steps: `{"type":"steps","title":"...","items":[{"title":"...","text":"..."}]}`
-- bullets: `{"type":"bullets","title":"...","items":["..."]}`
-- table: `{"type":"table","title":"...","columns":["..."],"rows":[["..."]]}` (equal cells per row)
-- resources: `{"type":"resources","title":"...","items":[{"title":"...","url":"https://verified-link","note":"..."}]}`
-- glossary: `{"type":"glossary","title":"...","items":[{"term":"...","definition":"..."}]}`
+All table rows have exactly as many string cells as the table's columns. Every card `link` and page `parent` references an actual page ID. Do not invent URLs, chronology, actor relationships or numerical data. Use unlinked `bullets` for named resources without actual URLs.
 
-Top-level glossary is an array of `{"term":"...","definition":"..."}` entries. Use `[[TERM]]` in prose to provide hover definitions. Avoid invented URLs. For unlinked documents use bullets.
+The renderer and Studio editor share these block types. Layout choices are content-led and must match the source, not a fixed executive example.
 
-Never include source filenames, classification statements or process attribution in the reader-facing guide unless expressly requested. Retain genuine reader-relevant reference links and authority constraints.
 
-Generated HTML contains `<script type="application/json" id="guide-data">` with embedded safe JSON, and meta tag `refract-format-version=1`. Refract Studio can import and re-edit it. Direct export is one HTML file, no external libraries.
+## Additions in generator v6.3 (format v1, backward-compatible optional fields)
+
+Every block may have an optional stable kebab-case `id`; assign one for newly authored guides. IDs are unique within each page. Older blocks without an ID use `section-1`, `section-2`, etc.; Studio gives these IDs explicit values before reordering.
+
+- Internal card links may target `page-id#block-id` as well as a whole page.
+- Inline `[[page-id#block-id|Readable label]]` creates a section link; `[[page-id|Label]]` creates a page link. `[[TERM]]` still means a glossary definition. Do not use Markdown/HTML links in plain text fields.
+- `table.footnotes` is an optional array of strings, rendered immediately below the table. Preserve source footnote markers in the relevant cells and note text.
+- `image`: `{type:"image", id?:"original-chart", title:"Original chart", src:"data:image/png;base64,...", alt:"Description of information conveyed", caption?:"Original caption"}`. PNG, JPEG, GIF and WebP are accepted. SVG, remote images and file paths are not accepted; embedded bytes keep the guide self-contained.
+- Plain text line breaks are preserved. Arbitrary Markdown, HTML, nested lists, merged cells and mathematical notation are not interpreted. Do not invent schema fields to hold substantive material: unknown fields are rejected to avoid invisible content.

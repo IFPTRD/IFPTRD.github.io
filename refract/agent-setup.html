@@ -2,11 +2,11 @@
 <h1>Refract — Microsoft 365 Copilot HTML Generator</h1>
 <p>Convert authorized source documents into a complete, interactive <strong>HTML guide</strong> that can be edited later in Refract Studio. The generator uses the same fixed design template as Refract. It does not require copying JSON into the builder.</p>
 <section><h2>Download the HTML generator skill</h2>
-<p><a href="Refract_Copilot_HTML_Generator_v6.2.zip" download style="display:inline-block;background:#126b72;color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">Download Refract HTML Generator v6.2 (.zip)</a></p>
-<p>The ZIP contains <code>SKILL.md</code>, the adaptive high-contrast Refract template, schema, generic example, source-coverage guidance, an additional binder-completeness checker, JSON validator, and offline Python renderer. The template supports editable governance diagrams and timelines, plus verified readable text colours and corrected hero-heading contrast. No source documents from other projects are included.</p></section>
+<p><a href="Refract_Copilot_HTML_Generator_v6.3.zip" download style="display:inline-block;background:#126b72;color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">Download Refract HTML Generator v6.3 (.zip)</a></p>
+<p>The ZIP contains <code>SKILL.md</code>, the adaptive high-contrast Refract template, schema, generic example, source-coverage guidance, a checker for source locations, substantive block mappings and exact precision anchors, JSON validator, and offline Python renderer. The template supports editable governance diagrams and timelines, plus verified readable text colours and corrected hero-heading contrast. No source documents from other projects are included.</p></section>
 <section><h2>1. Configure the agent</h2><ol>
 <li>Open your existing agent in Microsoft 365 Copilot Agent Builder under <strong>Configure</strong>.</li>
-<li>Under <strong>Skills</strong>, remove or replace the previous Refract skill. Upload the new <strong>v6.2 ZIP</strong> intact using <strong>Add</strong>.</li>
+<li>Under <strong>Skills</strong>, remove or replace the previous Refract skill. Upload the new <strong>v6.3 ZIP</strong> intact using <strong>Add</strong>.</li>
 <li>Replace all earlier agent Instructions with the <a href="copilot-agent-instructions.txt">latest Refract agent instructions</a>. Do not place sample prompts in the Instructions field.</li>
 <li>Save the agent and open <strong>Try it</strong> in a fresh conversation. Make sure its document access and Code Interpreter/file generation capabilities are available in your tenant.</li>
 </ol></section>
@@ -16,9 +16,10 @@
 <li>Download the generated <code>.html</code> file from the Copilot conversation and inspect it in a browser.</li>
 <li>To revise: open <a href="./">Refract Studio</a>, choose <strong>Import HTML</strong>, edit pages or sections, and export the revised HTML.</li>
 </ol></section>
+<section><h2>Dense documents and retained detail</h2><p>v6.3 adds collapsible contents groups, section-level search with excerpts, direct internal section links, table footnotes, embedded original images, and stricter structure and coverage checks. It preserves detailed material rather than enforcing a page limit. Coverage checks do not prove that extraction or interpretation was complete: review figures, qualifications, recommendations and essential assets against the source.</p></section>
 <section><h2>3. Troubleshooting</h2>
-<p>If Copilot generates only JSON, drops large sections, adds invented intervention advice, or narrates a plan, verify the old Instructions and skill were replaced with v6.2 and that Code Interpreter is available. The renderer must be executed with the packaged template; Copilot should not independently write HTML/CSS/JavaScript.</p>
-<p>For a long e-binder, ask the agent to review its source-inventory.json against the original agendas, briefing notes and annexes and run scripts/check_coverage.py. If the skill reports a validation error, ask the agent to repair its intermediate Refract JSON and rerun <code>scripts/render_refract.py</code>. If your tenant cannot produce downloadable HTML, the skill explicitly falls back to Refract JSON rather than claiming successful file generation.</p>
+<p>If Copilot generates only JSON, drops large sections, adds invented intervention advice, or narrates a plan, verify the old Instructions and skill were replaced with v6.3 and that Code Interpreter is available. The renderer must be executed with the packaged template; Copilot should not independently write HTML/CSS/JavaScript.</p>
+<p>For a long e-binder, ask the agent to review its source-inventory.json against the original agendas, briefing notes and annexes and run scripts/check_coverage.py with --strict. If the skill reports a validation error, ask the agent to repair its intermediate Refract JSON and rerun <code>scripts/render_refract.py</code>. If your tenant cannot produce downloadable HTML, the skill explicitly falls back to Refract JSON rather than claiming successful file generation.</p>
 <p>If a guide does not import as editable, hard-refresh Refract Studio to load the v5 block support. Verify it was generated by Refract and still contains <code>script#guide-data</code>. Refract Studio can convert other HTML approximately, but exact editing requires embedded guide data.</p>
 </section>
 <section><h2>4. Information handling</h2>

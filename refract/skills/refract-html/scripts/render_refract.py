@@ -10,6 +10,7 @@ import json
 import sys
 from pathlib import Path
 from validate_refract import check, normalize
+from check_coverage import check_coverage
 
 FORMAT_VERSION = 1
 DEFAULT_TEMPLATE = Path(__file__).resolve().parent.parent / "references" / "guide-template.html"
@@ -35,6 +36,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Render standalone editable Refract HTML")
     parser.add_argument("input", type=Path, help="Refract JSON input file")
     parser.add_argument("--output", type=Path, default=Path("guide.html"))
+    parser.add_argument("--inventory", type=Path, help="Verify strict source mappings and precision anchors before rendering")
     parser.add_argument("--normalize", action="store_true", help="Normalize known compatible block shapes")
     parser.add_argument("--fail-on-warnings", action="store_true", help="Require all editorial warnings to be resolved")
     parser.add_argument("--template", type=Path, default=DEFAULT_TEMPLATE)
@@ -47,6 +49,12 @@ def main(argv=None):
     if args.normalize:
         normalize(data)
     errors, warnings = check(data)
+    if args.inventory:
+        try:
+            inventory = json.loads(args.inventory.read_text(encoding="utf-8-sig"))
+            errors.extend(check_coverage(inventory, data, strict=True))
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append("Invalid source inventory: " + str(exc))
     for warning in warnings:
         print("EDITORIAL WARNING: " + warning, file=sys.stderr)
     for error in errors:
