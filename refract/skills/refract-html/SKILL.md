@@ -40,7 +40,7 @@ The generated HTML must be an **adequate standalone replacement** for the source
 
 Before drafting pages, create an **internal source inventory** of all substantive content units from the entire source, not just its opening sections or table of contents. For an e-binder this includes each meeting, agenda, agenda item, item-specific briefing note, supporting issue note, decision/action requested, annex, attachment and reference section, with identifying headings.
 
-Map every item to one or more destination Refract page IDs; mark a source item excluded only if truly duplicative, blank, or explicitly outside user scope, and record the reason. For substantial sources, save an internal `source-inventory.json` alongside the intermediate `guide.json` and run the bundled `scripts/check_coverage.py` before HTML rendering. This catches unassigned inventory items and broken page mappings; it is **not** proof that the original source was fully read, so manually cross-check source headings and key detail.
+Map every item to one or more destination Refract page IDs; mark a source item excluded only if truly duplicative, blank, or explicitly outside user scope, and record the reason. For every conversion, save an internal `source-inventory.json` alongside the intermediate `guide.json` and run the bundled `scripts/check_coverage.py` before HTML rendering. This catches unassigned inventory items and broken page mappings; it is **not** proof that the original source was fully read, so manually cross-check source headings and key detail.
 
 If the source is too long to process reliably in one response, process it **in sections** and assemble a complete intermediate guide before rendering. Do not deliver only the first few sections and call that a complete binder. If material is inaccessible or exceeds actual tool/context capability, disclose the remaining limitation instead of silently reducing scope.
 
@@ -98,7 +98,7 @@ Before creating HTML, perform two independent silent reviews:
 
 If Python execution and file delivery are available:
 1. Save the full intermediate JSON as `guide.json`.
-2. For multi-section documents, save `source-inventory.json` and run `python scripts/check_coverage.py source-inventory.json guide.json --strict`; resolve missing mappings, then check the underlying source content manually. Run `python scripts/validate_refract.py guide.json`; correct all structural errors and inappropriate editorial warnings.
+2. Save `source-inventory.json` and run `python scripts/check_coverage.py source-inventory.json guide.json --strict`; resolve missing mappings, then check the underlying source content manually. Run `python scripts/validate_refract.py guide.json`; correct all structural errors and inappropriate editorial warnings.
 3. Run `python scripts/render_refract.py guide.json --output guide.html --fail-on-warnings --inventory source-inventory.json`.
 4. Verify the HTML exists and contains embedded `script#guide-data`, navigation, search, print and the source-backed content. Return the downloadable standalone HTML file—not the JSON or HTML source code.
 
